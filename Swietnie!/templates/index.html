@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat Interface</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #121212; /* Dark background color */
+            color: #ffffff; /* White text color */
+            text-align: center;
+            overflow: hidden; /* Prevent scrollbars */
+        }
+        .message {
+            white-space: pre-wrap; /* Preserve whitespace and newlines */
+            word-break: break-word; /* Break long words */
+            font-size: 24px; /* Larger font size for readability */
+            opacity: 0;
+            transition: opacity 1s ease-in-out; /* Fade-in and fade-out transition */
+        }
+    </style>
+</head>
+<body>
+    <div id="message" class="message"></div>
+
+    <script>
+        let recognition;
+        let lastMessage = '';
+        let isProcessing = false;
+
+        function fadeOutAndUpdate(text, isUserMessage) {
+            const messageElement = document.getElementById('message');
+            messageElement.style.opacity = 0; // Fade out the current message
+
+            // After fade out completes, update the message and fade it in
+            setTimeout(() => {
+                messageElement.textContent = text;
+                messageElement.style.opacity = 1; // Fade in the new message
+            }, 1000); // Delay for fade-out to complete
+        }
+
+        async function sendMessage(message) {
+            if (isProcessing) return; // Prevent overlapping messages
+
+            isProcessing = true; // Set processing flag
+
+            fadeOutAndUpdate(message, true); // Fade out current message and update with new message
+
+            const response = await fetch('/send_message', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ message })
+            });
+
+            const data = await response.json();
+            if (response.ok) {
+                // Fade out and then fade in bot's response
+                setTimeout(() => {
+                    fadeOutAndUpdate(data.response, false);
+                    isProcessing = false; // Reset processing flag
+                }, 1000); // Delay for fade-out
+            } else {
+                fadeOutAndUpdate(`Error: ${data.error}`, false);
+                isProcessing = false; // Reset processing flag
+            }
+        }
+
+        function startRecording() {
+            if (!('webkitSpeechRecognition' in window)) {
+                alert('Speech Recognition API not supported in this browser.');
+                return;
+            }
+
+            recognition = new webkitSpeechRecognition();
+            recognition.lang = 'en-US';
+            recognition.interimResults = false;
+            recognition.continuous = false; // Ensure continuous listening is disabled
+
+            recognition.onstart = () => {
+                // No need for additional actions on start
+            };
+
+            recognition.onresult = (event) => {
+                const transcript = event.results[0][0].transcript.trim();
+                if (transcript) {
+                    sendMessage(transcript);
+                }
+            };
+
+            recognition.onend = () => {
+                // Restart the recognition after a short delay
+                setTimeout(startRecording, 1000);
+            };
+
+            recognition.start();
+        }
+
+        // Start recording as soon as the page loads
+        window.addEventListener('load', startRecording);
+    </script>
+</body>
+</html>
