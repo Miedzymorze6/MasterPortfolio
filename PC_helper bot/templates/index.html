@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chatbot</title>
+    <style>
+        /* General Styles */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: url('https://cdn.dribbble.com/users/108183/screenshots/3191371/magic_preloader_by_volorf_.gif') no-repeat center center fixed;
+            background-size: cover;
+            color: #ddd;
+        }
+
+        /* Chat Container */
+        .chat-container {
+            background-color: rgba(44, 44, 62, 0.9);
+            width: 400px;
+            height: 500px;
+            max-width: 90%;
+            box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.5);
+            border-radius: 15px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Chat Header */
+        .chat-header {
+            background-color: #3a3a4f;
+            color: #f4f4f4;
+            padding: 15px;
+            text-align: center;
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+
+        /* Chat Body */
+        .chat-body {
+            flex: 1;
+            padding: 15px;
+            overflow-y: auto;
+            background-color: transparent;
+            scrollbar-width: thin;
+            scrollbar-color: #5c5c7f #2c2c3e;
+        }
+
+        .chat-body::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .chat-body::-webkit-scrollbar-track {
+            background: #2c2c3e;
+        }
+
+        .chat-body::-webkit-scrollbar-thumb {
+            background-color: #5c5c7f;
+            border-radius: 4px;
+        }
+
+        /* Chat Input */
+        .chat-input {
+            padding: 10px;
+            background-color: #3a3a4f;
+            display: flex;
+            border-top: 1px solid #444;
+        }
+
+        .chat-input input {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 5px;
+            margin-right: 10px;
+            background-color: #444;
+            color: #ddd;
+        }
+
+        .chat-input input:focus {
+            outline: none;
+        }
+
+        .chat-input button {
+            padding: 12px 20px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .chat-input button:hover {
+            background-color: #0056b3;
+        }
+
+        /* Messages */
+        .message {
+            margin-bottom: 15px;
+            display: flex;
+            align-items: flex-end;
+            opacity: 0;
+            animation: fadeIn 0.5s forwards;
+            position: relative;
+        }
+
+        .message img {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            position: absolute;
+            bottom: 0;
+            left: -20px;
+            transform: translateX(-50%);
+        }
+
+        .user-message, .bot-message {
+            text-align: left;
+            background-color: #5c5c7f;
+            color: white;
+            padding: 10px;
+            border-radius: 10px;
+            max-width: 70%;
+            word-wrap: break-word;
+            margin-left: 40px;
+            position: relative;
+        }
+
+        .user-message {
+            background-color: #007BFF;
+        }
+
+        /* Typing Indicator */
+        .typing {
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .typing img {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+
+        .typing-dots {
+            display: flex;
+        }
+
+        .typing-dots div {
+            width: 8px;
+            height: 8px;
+            background-color: #ddd;
+            border-radius: 50%;
+            margin: 0 3px;
+            animation: blink 1.4s infinite both;
+        }
+
+        .typing-dots div:nth-child(1) {
+            animation-delay: 0s;
+        }
+
+        .typing-dots div:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .typing-dots div:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes blink {
+            0%, 80%, 100% {
+                opacity: 0;
+            }
+            40% {
+                opacity: 1;
+            }
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="chat-container">
+        <div class="chat-header">Chatbot</div>
+        <div class="chat-body" id="chat-body">
+            <!-- Messages will appear here -->
+        </div>
+        <div class="chat-input">
+            <input type="text" id="message-input" placeholder="Type a message..." onkeydown="if(event.key === 'Enter') sendMessage()">
+            <button onclick="sendMessage()">Send</button>
+        </div>
+    </div>
+
+    <script>
+        const chatBody = document.getElementById('chat-body');
+        const messageInput = document.getElementById('message-input');
+
+        async function sendMessage() {
+            const message = messageInput.value;
+            if (message.trim() === '') return;
+
+            // Display the user's message with the icon
+            chatBody.innerHTML += `
+                <div class="message user-message">
+                    <span>${message}</span>
+                    <img src="https://cdn-icons-png.flaticon.com/512/3177/3177440.png" alt="User">
+                </div>`;
+            chatBody.scrollTop = chatBody.scrollHeight;
+            messageInput.value = '';
+
+            // Display typing indicator
+            const typingIndicator = `
+                <div class="typing" id="typing-indicator">
+                    <img src="https://cdn-icons-png.flaticon.com/512/4712/4712035.png" alt="Bot">
+                    <div class="typing-dots">
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                    </div>
+                </div>`;
+            chatBody.innerHTML += typingIndicator;
+            chatBody.scrollTop = chatBody.scrollHeight;
+
+            // Send message to the server
+            const response = await fetch('/chat', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ message: message })
+            });
+
+            const data = await response.json();
+            const botMessage = data.response.split(': ').pop(); // Extracts the message content
+
+            // Remove typing indicator
+            const typingElement = document.getElementById('typing-indicator');
+            typingElement.remove();
+
+            // Display the bot's response with the icon
+            chatBody.innerHTML += `
+                <div class="message bot-message">
+                    <span>${botMessage}</span>
+                    <img src="https://cdn-icons-png.flaticon.com/512/4712/4712035.png" alt="Bot">
+                </div>`;
+            chatBody.scrollTop = chatBody.scrollHeight;
+        }
+    </script>
+</body>
+</html>
