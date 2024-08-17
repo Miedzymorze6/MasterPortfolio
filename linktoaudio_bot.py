@@ -11,11 +11,11 @@ import eyed3
 from eyed3.id3.frames import ImageFrame
 
 # Replace with your own Telegram bot token
-API_TOKEN = '6937602137:AAHSJIGTN4h8SfWOTdJduUZXsOq4jG9LDnw'
+API_TOKEN = 'MY_TOKEN_IS_HIDDEN' #sample bot needed
 bot = telebot.TeleBot(API_TOKEN)
 
 # Set ffmpeg path
-AudioSegment.converter = "C:\\Users\\User\\PycharmProjects\\pythonProject5\\Telegram\\ffmpeg.exe"
+AudioSegment.converter = "C:\\Users\\User\\PycharmProjects\\pythonProject5\\Telegram\\ffmpeg.exe"  #change path as convenient
 
 
 def get_youtube_video_id(url):
@@ -51,7 +51,7 @@ def download_and_center_thumbnail(video_url, output_file, size=(1000, 1000)):
         return False
 
     # Construct the thumbnail URL
-    thumbnail_url = f"https://img.youtube.com/vi/{video_id}/maxresdefault.jpg"
+    thumbnail_url = f"https://img.youtube.com/vi/{video_id}/maxresdefault.jpg"          
 
     # Download the thumbnail
     response = requests.get(thumbnail_url)
@@ -101,7 +101,7 @@ def download_audio(video_url: str, bitrate: str, title: str) -> str:
                 'preferredcodec': 'mp3',
                 'preferredquality': bitrate,
             }],
-            'ffmpeg_location': 'C:\\Users\\User\\PycharmProjects\\pythonProject5\\Telegram\\ffmpeg.exe',
+            'ffmpeg_location': 'C:\\Users\\User\\PycharmProjects\\pythonProject5\\Telegram\\ffmpeg.exe',      #change path as convenient
         }
         with ytdlp.YoutubeDL(ydl_opts) as ydl:
             ydl.download([video_url])
