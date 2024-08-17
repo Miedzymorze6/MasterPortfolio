@@ -5,7 +5,7 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), 'PyCh
 from PyCharacterAI import Client
 
 app = Quart(__name__)
-token = "58009acf6549b6c5004c478c9f9620a18c4d5227"
+token = "YOUR_MAGNIFICENT_TOKEN_HERE"
 client = Client()
 
 async def authenticate():
@@ -22,7 +22,7 @@ async def index():
 async def chat():
     data = await request.get_json()
     message = data['message']
-    character_id = "uX8qHZKfWjy8v62H6A7uLGnhVBw971UAJ3CUqgcPURc"
+    character_id = "uX8qHZKfWjy8v62H6A7uLGnhVBw971UAJ3CUqgcPURc" #Pretrained bot id
     chat = await client.create_or_continue_chat(character_id)
     answer = await chat.send_message(message)
     return jsonify({'response': f"{answer.src_character_name}: {answer.text}"})
