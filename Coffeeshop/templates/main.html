@@ -1,0 +1,134 @@
+{% extends "base.html" %}
+
+{% block content %}
+<style>
+    .content-section {
+        padding: 20px;
+        margin: 0 auto;
+        max-width: 800px;
+    }
+
+    .visuals {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr); /* 3 columns */
+        gap: 10px; /* Space between images */
+        justify-items: center; /* Center images horizontally within their grid cells */
+        align-items: center; /* Center images vertically within their grid cells */
+    }
+
+    .visuals-container {
+        display: flex;
+        justify-content: center; /* Center the grid itself within its container */
+        align-items: center; /* Align the grid vertically */
+        flex-wrap: wrap; /* Wrap items if necessary */
+    }
+
+    .visuals img {
+        width: 400px;
+        height: 300px;
+        object-fit: cover; /* Crop the image to fit the 400x300 ratio */
+        border-radius: 8px; /* Optional: adds rounded corners */
+        cursor: pointer; /* Indicate that images are clickable */
+        display: none; /* Hide images by default */
+    }
+
+    .visuals img.active {
+        display: block; /* Show image if it has the 'active' class */
+    }
+
+    .modal {
+        display: none; /* Hidden by default */
+        position: fixed; /* Stay in place */
+        z-index: 1; /* Sit on top */
+        left: 0;
+        top: 0;
+        width: 100%; /* Full width */
+        height: 100%; /* Full height */
+        overflow: auto; /* Enable scroll if needed */
+        background-color: rgba(0,0,0,0.8); /* Black background with opacity */
+    }
+
+    .modal-content {
+        margin: 15% auto;
+        display: block;
+        width: 80%;
+        max-width: 700px;
+    }
+
+    .close {
+        position: absolute;
+        top: 15px;
+        right: 35px;
+        color: #fff;
+        font-size: 40px;
+        font-weight: bold;
+        cursor: pointer;
+    }
+
+    .close:hover,
+    .close:focus {
+        color: #bbb;
+        text-decoration: none;
+        cursor: pointer;
+    }
+
+    .modal img {
+        width: 100%;
+        height: auto;
+    }
+
+    h2 {
+        font-size: 1.5em; /* Medium text size */
+    }
+
+    p {
+        font-size: 1.1em; /* Medium text size */
+    }
+</style>
+
+<div class="content-section">
+    <h2>Our Coffee</h2>
+    <p>We take pride in our carefully curated selection of coffee beans sourced from the finest growers around the world. Each cup is brewed to perfection, offering a rich and flavorful experience that will leave you coming back for more. Explore our extensive coffee menu, from classic espresso to innovative seasonal creations.</p>
+</div>
+
+<div class="content-section">
+    <h2>Gallery</h2>
+    <p>Take a look at some highlights from our coffee shop. Our gallery features the best of what we have to offer, including our beautifully crafted drinks and delectable desserts. Enjoy a glimpse of what makes our space special.</p>
+    <div class="visuals-container">
+        <div class="visuals">
+            <img src="https://t3.ftcdn.net/jpg/05/68/26/64/360_F_568266450_wwY8p50EyOHULpd68D0z0QvMyNOu7Xls.jpg" alt="Coffee Shop Interior" onclick="openModal(this)" class="active">
+            <img src="https://png.pngtree.com/thumb_back/fw800/background/20240602/pngtree-barista-cafe-making-coffee-preparation-service-concept-image_15737443.jpg" alt="Barista making coffee" onclick="openModal(this)" class="active">
+            <img src="https://thumbs.dreamstime.com/b/young-female-barista-trendy-modern-cafe-coffee-shop-pours-boiling-water-over-coffee-grounds-making-pour-over-drip-93857858.jpg" alt="French desserts" onclick="openModal(this)" class="active">
+            <!-- Placeholders (hidden) -->
+            <img src="https://via.placeholder.com/400x300" alt="Placeholder Image 1">
+            <img src="https://via.placeholder.com/400x300" alt="Placeholder Image 2">
+            <img src="https://via.placeholder.com/400x300" alt="Placeholder Image 3">
+            <img src="https://via.placeholder.com/400x300" alt="Placeholder Image 4">
+            <img src="https://via.placeholder.com/400x300" alt="Placeholder Image 5">
+            <img src="https://via.placeholder.com/400x300" alt="Placeholder Image 6">
+        </div>
+    </div>
+</div>
+
+<!-- The Modal -->
+<div id="myModal" class="modal">
+    <span class="close" onclick="closeModal()">&times;</span>
+    <img class="modal-content" id="modalImage">
+</div>
+
+<script>
+    function openModal(img) {
+        var modal = document.getElementById("myModal");
+        var modalImg = document.getElementById("modalImage");
+        modal.style.display = "block";
+        modalImg.src = img.src;
+        document.body.style.overflow = 'hidden'; // Disable scrolling
+    }
+
+    function closeModal() {
+        var modal = document.getElementById("myModal");
+        modal.style.display = "none";
+        document.body.style.overflow = ''; // Re-enable scrolling
+    }
+</script>
+{% endblock %}

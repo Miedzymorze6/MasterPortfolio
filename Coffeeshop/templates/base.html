@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coffee Shop</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            background-color: #f8f8f8;
+        }
+
+        header {
+            background-color: #4b2c20;
+            padding: 10px 0;
+            text-align: center;
+        }
+
+        header nav ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        header nav ul li {
+            display: inline;
+            margin: 0 15px;
+        }
+
+        header nav ul li a {
+            color: #fff;
+            text-decoration: none;
+            font-size: 1.2em;
+        }
+
+        footer {
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            padding: 20px 0;
+        }
+
+        footer a {
+            color: #fff;
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+        #map {
+            height: 200px;
+            margin: 20px auto;
+            width: 80%;
+            max-width: 600px;
+        }
+
+        .content-section {
+            padding: 20px;
+            text-align: center;
+        }
+
+        .content-section h2 {
+            color: #4b2c20;
+        }
+
+        .content-section p {
+            font-size: 1.1em;
+            line-height: 1.6em;
+            max-width: 800px;
+            margin: 10px auto;
+        }
+
+        .social-icons a {
+            color: #fff;
+            margin: 0 10px;
+            font-size: 1.5em;
+            text-decoration: none;
+        }
+
+        .social-icons a:hover {
+            color: #ccc;
+        }
+
+        @media (max-width: 768px) {
+            header nav ul li {
+                display: block;
+                margin: 10px 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <ul>
+                <li><a href="{{ url_for('home') }}">Home</a></li>
+                <li><a href="{{ url_for('menu') }}">Menu</a></li>
+                <li><a href="#contact">Contact Us</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        {% block content %}
+        {% endblock %}
+    </main>
+
+    <footer id="contact">
+        <div id="map">
+            <iframe
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1682.792874870277!2d4.835659816247223!3d45.75761865787512!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x47f4d5c5d0d4f51f%3A0x9f5a77fa16c3aa8!2sPlace%20Bellecour!5e0!3m2!1sen!2sfr!4v1692587845350!5m2!1sen!2sfr"
+                width="100%"
+                height="200"
+                style="border:0;"
+                allowfullscreen=""
+                loading="lazy"></iframe>
+        </div>
+        <p>Contact us: <a href="tel:+123456789">+1 234 567 89</a> | <a href="mailto:info@coffeeshop.com">info@coffeeshop.com</a></p>
+        <p>Address: 123 Coffee Lane, Lyon, France</p>
+        <p>Opening Hours: Mon-Fri 8am - 6pm, Sat 9am - 5pm, Sun Closed</p>
+        <p class="social-icons">
+            <a href="https://facebook.com/coffeeshop" target="_blank"><i class="fab fa-facebook-f"></i></a>
+            <a href="https://twitter.com/coffeeshop" target="_blank"><i class="fab fa-twitter"></i></a>
+            <a href="https://instagram.com/coffeeshop" target="_blank"><i class="fab fa-instagram"></i></a>
+        </p>
+    </footer>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            console.log("JavaScript is working!");
+        });
+    </script>
+</body>
+</html>

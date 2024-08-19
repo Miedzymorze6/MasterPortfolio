@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coffee Shop - Menu</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            background-color: #f8f8f8;
+        }
+
+        header {
+            background-color: #4b2c20;
+            padding: 10px 0;
+            text-align: center;
+        }
+
+        header nav ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        header nav ul li {
+            display: inline;
+            margin: 0 15px;
+        }
+
+        header nav ul li a {
+            color: #fff;
+            text-decoration: none;
+            font-size: 1.2em;
+        }
+
+        footer {
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            padding: 20px 0;
+        }
+
+        footer a {
+            color: #fff;
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+        .social-media {
+            margin-top: 10px;
+        }
+
+        .social-icon {
+            display: inline-block;
+            margin: 0 10px;
+        }
+
+        .social-icon img {
+            width: 24px;
+            height: 24px;
+            vertical-align: middle;
+        }
+
+
+        #map {
+            height: 200px;
+            margin: 20px auto;
+            width: 80%;
+            max-width: 600px;
+        }
+
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 10px;
+            padding: 20px;
+        }
+
+        .grid-item {
+            background-color: #fff;
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .grid-item:hover {
+            transform: scale(1.05);
+        }
+
+        .grid-item h4 {
+            margin: 10px 0 5px;
+            font-size: 1.1em;
+        }
+
+        .grid-item p {
+            margin: 0;
+            font-size: 0.9em;
+        }
+
+        .grid-item .price {
+            font-weight: bold;
+            color: #4b2c20;
+        }
+
+        @media (max-width: 768px) {
+            .grid-container {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .grid-container {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        .section-title {
+            text-align: center;
+            padding: 20px;
+            background-color: #333;
+            color: #fff;
+            font-size: 1.5em;
+        }
+
+        .social-icons a {
+            color: #fff;
+            margin: 0 10px;
+            font-size: 1.5em;
+            text-decoration: none;
+        }
+
+        .social-icons a:hover {
+            color: #ccc;
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <header>
+        <nav>
+            <ul>
+                <li><a href="{{ url_for('home') }}">Home</a></li>
+                <li><a href="{{ url_for('menu') }}">Menu</a></li>
+                <li><a href="#contact">Contact Us</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+    <div class="section-title">French Desserts</div>
+    <div class="grid-container">
+        <!-- French Desserts -->
+        <div class="grid-item" onclick="window.location.href='https://en.wikipedia.org/wiki/Cr%C3%A8me_br%C3%BBl%C3%A9e'">
+            <h4>Crème Brûlée</h4>
+            <p>A creamy vanilla custard with a caramelized sugar top.</p>
+            <p class="price">€7.50</p>
+        </div>
+        <div class="grid-item" onclick="window.location.href='https://en.wikipedia.org/wiki/Tarte_Tatin'">
+            <h4>Tarte Tatin</h4>
+            <p>An upside-down caramelized apple tart.</p>
+            <p class="price">€6.00</p>
+        </div>
+        <div class="grid-item" onclick="window.location.href='https://en.wikipedia.org/wiki/%C3%89clair'">
+            <h4>Éclair</h4>
+            <p>A choux pastry filled with vanilla cream and topped with chocolate glaze.</p>
+            <p class="price">€5.50</p>
+        </div>
+        <div class="grid-item" onclick="window.location.href='https://en.wikipedia.org/wiki/Macaron'">
+            <h4>Macaron</h4>
+            <p>Light almond meringue cookies filled with flavored cream.</p>
+            <p class="price">€2.00</p>
+        </div>
+        <div class="grid-item" onclick="window.location.href='https://en.wikipedia.org/wiki/Madeleine_(cake)'">
+            <h4>Madeleine</h4>
+            <p>Small sponge cakes with a hint of lemon or almond.</p>
+            <p class="price">€3.00</p>
+        </div>
+        <div class="grid-item" onclick="window.location.href='https://en.wikipedia.org/wiki/Profiterole'">
+            <h4>Profiterole</h4>
+            <p>Choux pastry puffs filled with cream and drizzled with chocolate.</p>
+            <p class="price">€4.50</p>
+        </div>
+        <div class="grid-item" onclick="window.location.href='https://en.wikipedia.org/wiki/Mille-feuille'">
+            <h4>Mille-Feuille</h4>
+            <p>Layers of puff pastry with pastry cream and icing.</p>
+            <p class="price">€6.50</p>
+        </div>
+        <div class="grid-item" onclick="window.location.href='https://en.wikipedia.org/wiki/G%C3%A2teau_Op%C3%A9ra'">
+            <h4>Gâteau Opéra</h4>
+            <p>A coffee-flavored layered cake with chocolate ganache.</p>
+            <p class="price">€7.00</p>
+        </div>
+        <div class="grid-item" onclick="window.location.href='https://en.wikipedia.org/wiki/Clafoutis'">
+            <h4>Clafoutis</h4>
+            <p>A baked custard dessert with fruit, traditionally cherries.</p>
+            <p class="price">€5.00</p>
+        </div>
+        <div class="grid-item" onclick="window.location.href='https://en.wikipedia.org/wiki/Paris-Brest'">
+            <h4>Paris-Brest</h4>
+            <p>A ring of choux pastry filled with praline-flavored cream.</p>
+            <p class="price">€6.00</p>
+        </div>
+        <div class="grid-item" onclick="window.location.href='https://en.wikipedia.org/wiki/Framboise'">
+            <h4>Framboise</h4>
+            <p>A raspberry-flavored dessert, typically a tart or mousse.</p>
+            <p class="price">€5.75</p>
+        </div>
+        <div class="grid-item" onclick="window.location.href='https://en.wikipedia.org/wiki/Chocolat_(dessert)'">
+            <h4>Chocolat</h4>
+            <p>A rich chocolate dessert, often a mousse or fondant.</p>
+            <p class="price">€6.25</p>
+        </div>
+        <div class="grid-item" onclick="window.location.href='https://en.wikipedia.org/wiki/G%C3%A2teau_Breton'">
+            <h4>Gâteau Breton</h4>
+            <p>A buttery, dense cake from Brittany.</p>
+            <p class="price">€4.75</p>
+        </div>
+        <div class="grid-item" onclick="window.location.href='https://en.wikipedia.org/wiki/Quiche'">
+            <h4>Quiche</h4>
+            <p>A savory tart filled with egg, cream, and various ingredients.</p>
+            <p class="price">€7.25</p>
+        </div>
+        <div class="grid-item" onclick="window.location.href='https://en.wikipedia.org/wiki/Tarte_aux_pommes'">
+            <h4>Tarte aux Pommes</h4>
+            <p>An apple tart with a buttery crust.</p>
+            <p class="price">€5.50</p>
+        </div>
+        <div class="grid-item" onclick="window.location.href='https://en.wikipedia.org/wiki/Cassoulet'">
+            <h4>Cassoulet</h4>
+            <p>A hearty stew with beans and meats, traditional in the south of France.</p>
+            <p class="price">€8.00</p>
+        </div>
+        <div class="grid-item" onclick="window.location.href='https://en.wikipedia.org/wiki/G%C3%A2teau_de_Rois'">
+            <h4>Gâteau de Rois</h4>
+            <p>A cake traditionally eaten during Epiphany, often with a hidden figurine inside.</p>
+            <p class="price">€7.50</p>
+        </div>
+        <div class="grid-item" onclick="window.location.href='https://en.wikipedia.org/wiki/P%C3%A2te_%C3%A0_Choux'">
+            <h4>Pâte à Choux</h4>
+            <p>A light pastry dough used for eclairs and profiteroles.</p>
+            <p class="price">€4.00</p>
+        </div>
+        <div class="grid-item" onclick="window.location.href='https://en.wikipedia.org/wiki/Chou_%C3%A0_la_Cr%C3%A8me'">
+            <h4>Chou à la Crème</h4>
+            <p>Choux pastry filled with whipped cream or custard.</p>
+            <p class="price">€3.75</p>
+        </div>
+        <div class="grid-item" onclick="window.location.href='https://en.wikipedia.org/wiki/Cr%C3%A8me_Caramel'">
+            <h4>Crème Caramel</h4>
+            <p>A custard dessert with a layer of caramel sauce.</p>
+            <p class="price">€6.00</p>
+        </div>
+        <div class="grid-item" onclick="window.location.href='https://en.wikipedia.org/wiki/Île_Flotante'">
+            <h4>Île Flottante</h4>
+            <p>Merengue floating on vanilla custard, often with caramel sauce.</p>
+            <p class="price">€5.25</p>
+        </div>
+        <div class="grid-item" onclick="window.location.href='https://en.wikipedia.org/wiki/Tarte_au_Chocolate'">
+            <h4>Tarte au Chocolat</h4>
+            <p>A rich chocolate tart with a buttery crust.</p>
+            <p class="price">€6.75</p>
+        </div>
+        <div class="grid-item" onclick="window.location.href='https://en.wikipedia.org/wiki/Pain_d%27Epices'">
+            <h4>Pain d'Épices</h4>
+            <p>A spiced bread, often sweet and containing honey.</p>
+            <p class="price">€4.50</p>
+        </div>
+        <div class="grid-item" onclick="window.location.href='https://en.wikipedia.org/wiki/Clafoutis'">
+            <h4>Clafoutis</h4>
+            <p>A custard-like dessert baked with fruit, typically cherries.</p>
+            <p class="price">€5.25</p>
+        </div>
+    </div>
+
+    <div class="section-title">Coffee Menu</div>
+    <div class="grid-container">
+        <!-- Coffee Options -->
+        <div class="grid-item" onclick="window.location.href='https://en.wikipedia.org/wiki/Espresso'">
+            <h4>Espresso</h4>
+            <p>A strong, concentrated coffee brewed by forcing hot water through finely ground coffee.</p>
+            <p class="price">€3.00</p>
+        </div>
+        <div class="grid-item" onclick="window.location.href='https://en.wikipedia.org/wiki/Americano'">
+            <h4>Americano</h4>
+            <p>Espresso diluted with hot water for a milder flavor.</p>
+            <p class="price">€3.50</p>
+        </div>
+        <div class="grid-item" onclick="window.location.href='https://en.wikipedia.org/wiki/Cappuccino'">
+            <h4>Cappuccino</h4>
+            <p>Espresso topped with equal parts steamed milk and froth.</p>
+            <p class="price">€4.00</p>
+        </div>
+        <div class="grid-item" onclick="window.location.href='https://en.wikipedia.org/wiki/Latte'">
+            <h4>Latte</h4>
+            <p>Espresso with steamed milk and a light layer of foam.</p>
+            <p class="price">€4.50</p>
+        </div>
+        <div class="grid-item" onclick="window.location.href='https://en.wikipedia.org/wiki/Latte'">
+            <h4>Macchiato</h4>
+            <p>Espresso with a small amount of frothy milk.</p>
+            <p class="price">€3.50</p>
+        </div>
+        <div class="grid-item" onclick="window.location.href='https://en.wikipedia.org/wiki/Drip_coffee'">
+            <h4>Drip Coffee</h4>
+            <p>Standard brewed coffee made by dripping hot water through coffee grounds.</p>
+            <p class="price">€2.75</p>
+        </div>
+        <div class="grid-item" onclick="window.location.href='https://en.wikipedia.org/wiki/French_press'">
+            <h4>French Press</h4>
+            <p>Coffee brewed by steeping coarsely ground beans in hot water and then pressing them down.</p>
+            <p class="price">€3.75</p>
+        </div>
+        <div class="grid-item" onclick="window.location.href='https://en.wikipedia.org/wiki/Pour_over'">
+            <h4>Pour Over</h4>
+            <p>Coffee brewed by pouring hot water over coffee grounds in a filter.</p>
+            <p class="price">€4.00</p>
+        </div>
+        <div class="grid-item" onclick="window.location.href='https://en.wikipedia.org/wiki/Cold_brew_coffee'">
+            <h4>Cold Brew</h4>
+            <p>Coffee brewed with cold water for 12-24 hours, served over ice.</p>
+            <p class="price">€4.25</p>
+        </div>
+        <div class="grid-item" onclick="window.location.href='https://en.wikipedia.org/wiki/Flat_white'">
+            <h4>Flat White</h4>
+            <p>Espresso with steamed milk, similar to a latte but with a thinner layer of microfoam.</p>
+            <p class="price">€4.50</p>
+        </div>
+        <div class="grid-item" onclick="window.location.href='https://en.wikipedia.org/wiki/Caf%C3%A9_au_lait'">
+            <h4>Café au Lait</h4>
+            <p>Brewed coffee with steamed milk.</p>
+            <p class="price">€4.00</p>
+        </div>
+        <div class="grid-item" onclick="window.location.href='https://en.wikipedia.org/wiki/Irish_coffee'">
+            <h4>Irish Coffee</h4>
+            <p>Hot coffee with Irish whiskey, sugar, and a layer of cream on top.</p>
+            <p class="price">€5.50</p>
+        </div>
+        <div class="grid-item" onclick="window.location.href='https://en.wikipedia.org/wiki/Turkish_coffee'">
+            <h4>Turkish Coffee</h4>
+            <p>Very finely ground coffee simmered in water and served unfiltered.</p>
+            <p class="price">€3.50</p>
+        </div>
+        <div class="grid-item" onclick="window.location.href='https://en.wikipedia.org/wiki/Caf%C3%A9_cubano'">
+            <h4>Café Cubano</h4>
+            <p>Sweetened espresso shot, popular in Cuban culture.</p>
+            <p class="price">€3.75</p>
+        </div>
+        <div class="grid-item" onclick="window.location.href='https://en.wikipedia.org/wiki/Vietnamese_coffee'">
+            <h4>Vietnamese Coffee</h4>
+            <p>Strong coffee brewed with a drip filter, often sweetened with condensed milk.</p>
+            <p class="price">€4.50</p>
+        </div>
+        <div class="grid-item" onclick="window.location.href='https://en.wikipedia.org/wiki/Espresso_con_panna'">
+            <h4>Espresso Con Panna</h4>
+            <p>A shot of espresso topped with whipped cream.</p>
+            <p class="price">€3.75</p>
+        </div>
+        <div class="grid-item" onclick="window.location.href='https://en.wikipedia.org/wiki/Mocha'">
+            <h4>Mocha</h4>
+            <p>Espresso with chocolate syrup and steamed milk, topped with whipped cream.</p>
+            <p class="price">€4.75</p>
+        </div>
+        <div class="grid-item" onclick="window.location.href='https://en.wikipedia.org/wiki/Caramel_macchiato'">
+            <h4>Caramel Macchiato</h4>
+            <p>Latte with vanilla syrup, espresso, and caramel drizzle on top.</p>
+            <p class="price">€5.00</p>
+        </div>
+        <div class="grid-item" onclick="window.location.href='https://en.wikipedia.org/wiki/Vanilla_latte'">
+            <h4>Vanilla Latte</h4>
+            <p>Latte with vanilla syrup for a sweet twist.</p>
+            <p class="price">€4.50</p>
+        </div>
+        <div class="grid-item" onclick="window.location.href='https://en.wikipedia.org/wiki/Affogato'">
+            <h4>Affogato</h4>
+            <p>A scoop of vanilla ice cream “drowned” with a shot of espresso.</p>
+            <p class="price">€5.75</p>
+        </div>
+        <div class="grid-item" onclick="window.location.href='https://en.wikipedia.org/wiki/White_russian'">
+            <h4>White Russian</h4>
+            <p>A cocktail made with vodka, coffee liqueur, and cream.</p>
+            <p class="price">€6.00</p>
+        </div>
+        <div class="grid-item" onclick="window.location.href='https://en.wikipedia.org/wiki/Latte_macchiato'">
+            <h4>Latte Macchiato</h4>
+            <p>Steamed milk with a splash of espresso.</p>
+            <p class="price">€4.25</p>
+        </div>
+        <div class="grid-item" onclick="window.location.href='https://en.wikipedia.org/wiki/Carajillo'">
+            <h4>Carajillo</h4>
+            <p>Espresso mixed with a shot of liquor, often brandy.</p>
+            <p class="price">€4.00</p>
+        </div>
+        <div class="grid-item" onclick="window.location.href='https://en.wikipedia.org/wiki/Café_bombón'">
+            <h4>Café Bombón</h4>
+            <p>Espresso layered with sweetened condensed milk.</p>
+            <p class="price">€4.50</p>
+        </div>
+        <div class="grid-item" onclick="window.location.href='https://en.wikipedia.org/wiki/Kopi_luwak'">
+            <h4>Kopi Luwak</h4>
+            <p>Expensive coffee made using beans eaten and excreted by civet cats.</p>
+            <p class="price">€15.00</p>
+        </div>
+        <div class="grid-item" onclick="window.location.href='https://en.wikipedia.org/wiki/Café_au_lait'">
+            <h4>Café au Lait</h4>
+            <p>Brewed coffee with steamed milk.</p>
+            <p class="price">€4.00</p>
+        </div>
+        <div class="grid-item" onclick="window.location.href='https://en.wikipedia.org/wiki/Black_and_tan_(beer)'">
+            <h4>Black and Tan</h4>
+            <p>A mix of coffee and stout beer.</p>
+            <p class="price">€5.50</p>
+        </div>
+    </div>
+</main>
+
+
+    <footer id="contact">
+        <div id="map">
+            <iframe
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1682.792874870277!2d4.835659816247223!3d45.75761865787512!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x47f4d5c5d0d4f51f%3A0x9f5a77fa16c3aa8!2sPlace%20Bellecour!5e0!3m2!1sen!2sfr!4v1692587845350!5m2!1sen!2sfr"
+                width="100%"
+                height="200"
+                style="border:0;"
+                allowfullscreen=""
+                loading="lazy"></iframe>
+        </div>
+        <p>Contact us: <a href="tel:+123456789">+1 234 567 89</a> | <a href="mailto:info@coffeeshop.com">info@coffeeshop.com</a></p>
+        <p>Address: 123 Coffee Lane, Lyon, France</p>
+        <p>Opening Hours: Mon-Fri 8am - 6pm, Sat 9am - 5pm, Sun Closed</p>
+        <p class="social-icons">
+            <a href="https://facebook.com/coffeeshop" target="_blank"><i class="fab fa-facebook-f"></i></a>
+            <a href="https://twitter.com/coffeeshop" target="_blank"><i class="fab fa-twitter"></i></a>
+            <a href="https://instagram.com/coffeeshop" target="_blank"><i class="fab fa-instagram"></i></a>
+        </p>
+    </footer>
+</footer>
+
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            // Example JavaScript code: Initialize map or handle navigation
+            console.log("JavaScript is working!");
+            // You can add your interactive features here
+        });
+    </script>
+</body>
+</html>
