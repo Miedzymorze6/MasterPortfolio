@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Linked Circles with Inner Circles</title>
+    <style>
+
+        .center-view-btn {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            padding: 10px 20px;
+            font-size: 1em;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            z-index: 20; /* Make sure it's above other elements */
+        }
+
+        .center-view-btn:hover {
+            background-color: #0056b3;
+        }
+
+        /* Existing styles remain unchanged */
+        body {
+            margin: 0;
+            height: 100vh;
+            width: 100vw;
+            overflow: hidden;
+            background-color: #f0f0f0;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            touch-action: none;
+        }
+
+        .outer-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 100%;
+        }
+
+        .zoom-wrapper {
+            position: absolute; /* Allow movement */
+            transform-origin: top left;
+            cursor: grab; /* Indicate draggable area */
+            /* The scale will be adjusted dynamically */
+        }
+
+        .zoom-wrapper.dragging {
+            cursor: grabbing; /* Indicate dragging */
+        }
+
+        .container {
+           position: relative;
+            width: 3840px;
+            height: 150px;
+            left: 80px;
+            /* Default zoom level */
+            transform: scale(0.3); /* Initial scale */
+            transform-origin: center; /* Zoom origin */
+            transition: transform 0.3s; /* Smooth zoom effect */
+        }
+
+        .circle {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background-color: rgba(255, 49, 3, 0.85);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            position: absolute;
+            z-index: 2;
+        }
+
+        .inner-circle {
+            width: 75px;
+            height: 75px;
+            border-radius: 50%;
+            background-color: #ffffff;
+        }
+
+        .line {
+            position: absolute;
+            top: 50px; /* Fixed top position */
+            height: 40px; /* Line thickness */
+            background-color: rgba(225, 49, 3, 0.85); /* Line color */
+            z-index: 1; /* Send the line to the back */
+            border-radius: 5px; /* Optional: rounded corners */
+            transform: translateY(-50%);
+        }
+
+        .line.double-line {
+            height: 0px;
+            top: 5px;/* Adjusted to account for the two lines */
+        }
+
+        .line.double-line::before,
+        .line.double-line::after {
+            content: '';
+            position: absolute;
+            height: 40px; /* Thickness of each line */
+            background-color: rgba(225, 49, 3, 0.85); /* Line color */
+            border-radius: 5px; /* Optional: rounded corners */
+            width: 100%;
+        }
+
+        .line.double-line::before {
+            top: -60px; /* Position for the first line */
+        }
+
+        .line.double-line::after {
+            top: 25px; /* Position for the second line */
+        }
+
+
+        .circle9, .circle10, .circle11, .circle12, .circle13, .circle14, .circle15, .circle16, .circle17, .circle18, .circle19, .circle20, .circle21, .circle22, .circle23, .circle24 {
+            width: 100px;
+            height: 200px;
+            border-radius: 90% / 50%;
+            background-color: rgba(255, 49, 3, 0.85);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: absolute;
+            z-index: 2;
+            top: -90px;
+        }
+
+        /* Style for the inner ellipses */
+        .inner-ellipse {
+            width: 75px; /* Width of the ellipse */
+            height: 170px; /* Height of the ellipse */
+            border-radius: 100% / 50%; /* Ellipse shape */
+            background-color: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+
+         /* Adjusted positions and widths for lines and circles */
+        .line1 { left: 90px; width: 150px; } /* Left position and width extended by 150% */
+        .line2 { left: 270px; width: 150px; }
+        .line3 { left: 450px; width: 150px; }
+        .line4 { left: 630px; width: 150px; }
+        .line5 { left: 810px; width: 150px; }
+        .line6 { left: 990px; width: 150px; }
+        .line7 { left: 1170px; width: 150px; }
+        .line8 { left: 1350px; width: 150px; }
+        .double-line { left: 1530px; width: 150px; }
+        .double-line { left: 1710px; width: 150px; }
+        .double-line { left: 1890px; width: 150px; }
+        .double-line { left: 2070px; width: 150px; }
+        .double-line { left: 2250px; width: 150px; }
+        .double-line { left: 2430px; width: 150px; }
+        .double-line { left: 2610px; width: 150px; }
+        .double-line { left: 2790px; width: 150px; }
+        .double-line { left: 2970px; width: 150px; }
+        .double-line { left: 3150px; width: 150px; }
+        .double-line { left: 3330px; width: 150px; }
+        .double-line { left: 3510px; width: 150px; }
+        .double-line { left: 3690px; width: 150px; }
+        .double-line { left: 3870px; width: 150px; }
+        .double-line { left: 4050px; width: 150px; }
+
+
+        /* Adjusted positions for circles */
+        .circle1 { left: 0; }
+        .circle2 { left: 180px; } /* Position extended by 150% */
+        .circle3 { left: 360px; }
+        .circle4 { left: 540px; }
+        .circle5 { left: 720px; }
+        .circle6 { left: 900px; }
+        .circle7 { left: 1080px; }
+        .circle8 { left: 1260px; }
+        .circle9 { left: 1440px; }
+        .circle10 { left: 1620px; }
+        .circle11 { left: 1800px; }
+        .circle12 { left: 1980px; }
+        .circle13 { left: 2160px; }
+        .circle14 { left: 2340px; }
+        .circle15 { left: 2520px; }
+        .circle16 { left: 2700px; }
+        .circle17 { left: 2880px; }
+        .circle18 { left: 3060px; }
+        .circle19 { left: 3240px; }
+        .circle20 { left: 3420px; }
+        .circle21 { left: 3600px; }
+        .circle22 { left: 3780px; }
+        .circle23 { left: 3960px; }
+        .circle24 { left: 4140px; }
+        .circle25 { left: 4320px; top: -100px; }
+        .circle26 { left: 4500px; top: -100px; } /* Adjust vertical spacing as needed */
+        .circle27 { left: 4680px; top: -100px; } /* Adjust vertical spacing as needed */
+        .circle28 { left: 4320px; top: 10px; }
+        .circle29 { left: 4500px; top: 10px; }
+        .circle30 { left: 4680px; top: 10px; }
+
+       .station-label,
+.station-labeltop {
+    position: absolute;
+    font-size: 3em; /* Adjust this value to increase the font size */
+    font-family: 'Raleway', sans-serif;
+    text-align: center;
+    white-space: nowrap; /* Prevent text wrapping */
+    letter-spacing: 8px; /* Adjust as needed */
+    line-height: 1; /* Adjust as needed */
+}
+
+/* Adjust positioning if necessary */
+.station-label {
+    bottom: -260px; /* Position label below the circle */
+    left: 50%;
+    transform: translateX(-50%) rotate(-60deg); /* Center horizontally and rotate */
+    transform-origin: top center; /* Adjust rotation origin for alignment */
+}
+
+.station-labeltop {
+    top: -190px; /* Position label below the circle */
+    left: 50%;
+    transform: translateX(-50%) rotate(-60deg); /* Center horizontally and rotate */
+    transform-origin: top center; /* Adjust rotation origin for alignment */
+}
+
+
+        @keyframes fadeInOut {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+
+        .station-label,
+        .station-labeltop {
+            opacity: 0; /* Start with all labels hidden */
+            animation: fadeInOut 5s linear infinite;
+        }
+
+        .station-label.active,
+        .station-labeltop.active {
+            animation-play-state: running; /* Start animation when class is active */
+        }
+
+        .station-label,
+        .station-labeltop {
+            animation-play-state: paused; /* Pause animation initially */
+        }
+
+        /* Time and weather display container */
+                .time-weather-container {
+            display: flex;
+            align-items: center;
+            justify-content: center; /* Center the items horizontally */
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            z-index: 10;
+            font-family: 'Arial', sans-serif;
+            padding: 10px;
+            font-size: 1.5em; /* Adjust as needed */
+        }
+
+        .weather-display {
+            font-size: 18px;
+            margin-right: 10px;
+        }
+
+        .time-display {
+            font-size: 24px;
+        }
+
+        /* Time display */
+        .time-display {
+            font-size: 24px;
+            margin-center: 10px;
+        }
+
+        /* Weather display */
+        .weather-display {
+            font-size: 18px;
+            margin-right: 10px;
+        }
+
+
+    </style>
+</head>
+<body>
+    <div class="time-weather-container">
+        <div class="weather-display" id="weather-display"></div>
+        <div class="time-display" id="time-display"></div>
+    </div>
+     <button id="center-view-btn" class="center-view-btn">Center View</button>
+    <div class="outer-container">
+        <div class="zoom-wrapper">
+    <div class="container">
+        <!-- Lines between circles -->
+        <div class="line line1"></div>
+        <div class="line line2"></div>
+        <div class="line line3"></div>
+        <div class="line line4"></div>
+        <div class="line line5"></div>
+        <div class="line line6"></div>
+        <div class="line line7"></div>
+        <div class="line line8"></div>
+        <div class="line double-line" style="left: 1530px; width: 150px;"></div>
+        <div class="line double-line" style="left: 1710px; width: 150px;"></div>
+        <div class="line double-line" style="left: 1890px; width: 150px;"></div>
+        <div class="line double-line" style="left: 2070px; width: 150px;"></div>
+        <div class="line double-line" style="left: 2250px; width: 150px;"></div>
+        <div class="line double-line" style="left: 2430px; width: 150px;"></div>
+        <div class="line double-line" style="left: 2610px; width: 150px;"></div>
+        <div class="line double-line" style="left: 2790px; width: 150px;"></div>
+        <div class="line double-line" style="left: 2970px; width: 150px;"></div>
+        <div class="line double-line" style="left: 3150px; width: 150px;"></div>
+        <div class="line double-line" style="left: 3330px; width: 150px;"></div>
+        <div class="line double-line" style="left: 3510px; width: 150px;"></div>
+        <div class="line double-line" style="left: 3690px; width: 150px;"></div>
+        <div class="line double-line" style="left: 3870px; width: 150px;"></div>
+        <div class="line double-line" style="left: 4050px; width: 150px;"></div>
+        <div class="line double-line" style="left: 4230px; width: 150px;"></div>
+        <div class="line double-line" style="left: 4400px; width: 150px;"></div>
+        <div class="line double-line" style="left: 4580px; width: 150px;"></div>
+
+
+        <!-- Circles -->
+         <div class="circle circle1">
+            <div class="inner-circle"></div>
+            <div class="station-label">Kivenlathi</div>
+        </div>
+        <div class="circle circle2">
+            <div class="inner-circle"></div>
+            <div class="station-label">Espoonlahti</div>
+        </div>
+        <div class="circle circle3">
+            <div class="inner-circle"></div>
+            <div class="station-label">Soukka</div>
+        </div>
+        <div class="circle circle4">
+            <div class="inner-circle"></div>
+            <div class="station-label">Kaitaa</div>
+        </div>
+        <div class="circle circle5">
+            <div class="inner-circle"></div>
+            <div class="station-label">Finnoo</div>
+        </div>
+        <div class="circle circle6">
+            <div class="inner-circle"></div>
+            <div class="station-label">Matinkylä</div>
+        </div>
+        <div class="circle circle7">
+            <div class="inner-circle"></div>
+            <div class="station-label">Niittykumpu</div>
+        </div>
+        <div class="circle circle8">
+            <div class="inner-circle"></div>
+            <div class="station-label">Urheilupuisto</div>
+        </div>
+        <div class="circle circle9">
+            <div class="inner-ellipse"></div>
+            <div class="station-label">Tapiola</div>
+        </div>
+        <div class="circle circle10">
+            <div class="inner-ellipse"></div>
+            <div class="station-label">Aalto-yliopisto</div>
+        </div>
+        <div class="circle circle11">
+            <div class="inner-ellipse"></div>
+            <div class="station-label">Keilanemi</div>
+        </div>
+        <div class="circle circle12">
+            <div class="inner-ellipse"></div>
+            <div class="station-label">Koivusaari</div>
+        </div>
+        <div class="circle circle13">
+            <div class="inner-ellipse"></div>
+            <div class="station-label">Lauttasaari</div>
+        </div>
+        <div class="circle circle14">
+            <div class="inner-ellipse"></div>
+            <div class="station-label">Ruoholahti</div>
+        </div>
+        <div class="circle circle15">
+            <div class="inner-ellipse"></div>
+            <div class="station-label">Kamppi</div>
+        </div>
+        <div class="circle circle16">
+            <div class="inner-ellipse"></div>
+            <div class="station-label">Rautatientori</div>
+        </div>
+        <div class="circle circle17">
+            <div class="inner-ellipse"></div>
+            <div class="station-label">Helsingin yliopisto</div>
+        </div>
+        <div class="circle circle18">
+            <div class="inner-ellipse"></div>
+            <div class="station-label">Hakaniemi</div>
+        </div>
+        <div class="circle circle19">
+            <div class="inner-ellipse"></div>
+            <div class="station-label">Sörnäinen</div>
+        </div>
+        <div class="circle circle20">
+            <div class="inner-ellipse"></div>
+            <div class="station-label">Kalasatama</div>
+        </div>
+        <div class="circle circle21">
+            <div class="inner-ellipse"></div>
+            <div class="station-label">Kulosaari</div>
+        </div>
+        <div class="circle circle22">
+            <div class="inner-ellipse"></div>
+            <div class="station-label">Herttoniemi</div>
+        </div>
+        <div class="circle circle23">
+            <div class="inner-ellipse"></div>
+            <div class="station-label">Siilite</div>
+        </div>
+        <div class="circle circle24">
+            <div class="inner-ellipse"></div>
+            <div class="station-label">Itäkeskus</div>
+        </div>
+        <div class="circle circle25">
+            <div class="inner-circle"></div>
+            <div class="station-labeltop">Myllypuro</div>
+        </div>
+        <div class="circle circle26">
+            <div class="inner-circle"></div>
+            <div class="station-labeltop">Kontula</div>
+        </div>
+        <div class="circle circle27">
+            <div class="inner-circle"></div>
+            <div class="station-labeltop">Mellunmäki</div>
+        </div>
+        <div class="circle circle28">
+            <div class="inner-circle"></div>
+            <div class="station-label">Puotila</div>
+        </div>
+        <div class="circle circle29">
+            <div class="inner-circle"></div>
+            <div class="station-label">Rastila</div>
+        </div>
+        <div class="circle circle30">
+            <div class="inner-circle"></div>
+            <div class="station-label">Vuosaari</div>
+        </div>
+
+
+    </div>
+    </div>
+        </div>
+
+
+
+    <script>
+            window.onload = function() {
+    const doubleLineElements = document.querySelectorAll('.line.double-line');
+    doubleLineElements.forEach(el => {
+        const left = el.style.left;
+        const width = el.style.width;
+
+        // Hide the corresponding single line
+        document.querySelectorAll(`.line:not(.double-line)`).forEach(line => {
+            if (line.style.left === left && line.style.width === width) {
+                line.style.display = 'none';
+            }
+        });
+    });
+
+    // Fade in and out station labels
+    const labels = document.querySelectorAll('.station-label, .station-labeltop');
+    let index = 0;
+
+    function showNextLabel() {
+        // Hide all labels
+        labels.forEach(label => label.classList.remove('active'));
+
+        // Show the current label
+        labels[index].classList.add('active');
+
+        // Increment index and reset if necessary
+        index = (index + 1) % labels.length;
+
+        // Schedule next label to be shown
+        setTimeout(showNextLabel, 5000); // 5000ms = 5 seconds
+    }
+
+    // Start the animation loop
+    showNextLabel();
+};
+
+window.onload = function() {
+    const container = document.querySelector('.container');
+    const zoomWrapper = document.querySelector('.zoom-wrapper');
+    let zoomLevel = 1; // Initial zoom level
+
+    // Initialize dragging variables
+    let isDragging = false;
+    let startX, startY, initialX, initialY;
+
+    // Adjust zoom based on scroll direction
+    function adjustZoom(event) {
+        if (event.deltaY > 0) {
+            zoomLevel = Math.max(0.3, zoomLevel - 0.05); // Zoom out
+        } else {
+            zoomLevel = Math.min(2, zoomLevel + 0.05); // Zoom in
+        }
+        container.style.transform = `scale(${zoomLevel})`;
+    }
+
+    // Handle mouse down event for dragging
+    function handleMouseDown(event) {
+        isDragging = true;
+        startX = event.clientX;
+        startY = event.clientY;
+        initialX = zoomWrapper.offsetLeft;
+        initialY = zoomWrapper.offsetTop;
+        zoomWrapper.classList.add('dragging');
+    }
+
+    // Handle mouse move event for dragging
+    function handleMouseMove(event) {
+        if (isDragging) {
+            const dx = event.clientX - startX;
+            const dy = event.clientY - startY;
+            zoomWrapper.style.left = `${initialX + dx}px`;
+            zoomWrapper.style.top = `${initialY + dy}px`;
+        }
+    }
+
+    // Handle mouse up event to stop dragging
+    function handleMouseUp() {
+        isDragging = false;
+        zoomWrapper.classList.remove('dragging');
+    }
+
+    // Center the view and reset zoom
+    function centerView() {
+    // Get the dimensions of the zoom wrapper and container
+    const wrapperRect = zoomWrapper.getBoundingClientRect();
+    const containerRect = container.getBoundingClientRect();
+
+    // Calculate the center position
+    const wrapperCenterX = (containerRect.width - wrapperRect.width * zoomLevel) / 2;
+    const wrapperCenterY = (containerRect.height - wrapperRect.height * zoomLevel) / 2;
+
+    // Apply the calculated position
+    zoomWrapper.style.left = `${wrapperCenterX}px`;
+    zoomWrapper.style.top = `${wrapperCenterY}px`;
+
+    // Reset zoom level
+    zoomLevel = 0.3;
+    container.style.transform = `scale(${zoomLevel})`;
+}
+
+    window.addEventListener('wheel', adjustZoom);
+    window.addEventListener('mousedown', handleMouseDown);
+    window.addEventListener('mousemove', handleMouseMove);
+    window.addEventListener('mouseup', handleMouseUp);
+
+    // Add event listener for center view button
+    document.getElementById('center-view-btn').addEventListener('click', centerView);
+
+    // Time and weather display functions
+    function updateTime() {
+        const options = { timeZone: 'Europe/Helsinki', hour: '2-digit', minute: '2-digit', second: '2-digit' };
+        const timeString = new Intl.DateTimeFormat('en-GB', options).format(new Date());
+        document.getElementById('time-display').textContent = `Helsinki  ${timeString}`;
+    }
+
+    async function updateWeather() {
+        try {
+            const response = await fetch('https://wttr.in/Helsinki?format=%t,%c');
+            const weatherText = await response.text();
+            const weatherTexty = weatherText.replace(/,/g, ' ');
+            document.getElementById('weather-display').textContent = `${weatherTexty}`;
+        } catch (error) {
+            console.error('Error fetching weather data:', error);
+            document.getElementById('weather-display').textContent = 'Error fetching weather data';
+        }
+    }
+
+    updateTime();
+    updateWeather();
+    setInterval(updateTime, 1000);
+};
+
+    </script>
+</body>
+</html>
