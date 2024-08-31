@@ -1,0 +1,2004 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Linked Circles with Inner Circles</title>
+    <style>
+
+        .center-view-btn {
+            position: fixed;
+            top: 4px;
+            right: 12px;
+            padding: 10px 20px;
+            font-size: 1em;
+            background-color: rgba(255, 255, 255, 0.33);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            z-index: 20; /* Make sure it's above other elements */
+        }
+
+        .center-view-btn:hover {
+            background-color: #0056b3;
+        }
+
+        /* Existing styles remain unchanged */
+        body {
+            margin: 0;
+            height: 100vh;
+            width: 100vw;
+            overflow: hidden;
+            background-color: #f0f0f0;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            touch-action: none;
+        }
+
+        .outer-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 100%;
+        }
+
+        .zoom-wrapper {
+            position: absolute; /* Allow movement */
+            transform-origin: top left;
+            cursor: grab; /* Indicate draggable area */
+            /* The scale will be adjusted dynamically */
+        }
+
+        .zoom-wrapper.dragging {
+            cursor: grabbing; /* Indicate dragging */
+        }
+
+        .container {
+           position: relative;
+            width: 3840px;
+            height: 150px;
+            left: 80px;
+            /* Default zoom level */
+            transform: scale(0.3); /* Initial scale */
+            transform-origin: center; /* Zoom origin */
+            transition: transform 0.3s; /* Smooth zoom effect */
+        }
+
+        .circle {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background-color: rgba(255, 49, 3, 0.85);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            position: absolute;
+            z-index: 2;
+        }
+
+        .inner-circle {
+            width: 75px;
+            height: 75px;
+            border-radius: 50%;
+            background-color: #ffffff;
+        }
+
+        .line {
+            position: absolute;
+            top: 50px; /* Fixed top position */
+            height: 40px; /* Line thickness */
+            background-color: rgba(225, 49, 3, 0.85); /* Line color */
+            z-index: 1; /* Send the line to the back */
+            border-radius: 5px; /* Optional: rounded corners */
+            transform: translateY(-50%);
+        }
+
+        .line.double-line {
+            height: 0px;
+            top: 5px;/* Adjusted to account for the two lines */
+        }
+
+        .line.double-line::before,
+        .line.double-line::after {
+            content: '';
+            position: absolute;
+            height: 40px; /* Thickness of each line */
+            background-color: rgba(225, 49, 3, 0.85); /* Line color */
+            border-radius: 5px; /* Optional: rounded corners */
+            width: 100%;
+        }
+
+        .line.double-line::before {
+            top: -60px; /* Position for the first line */
+        }
+
+        .line.double-line::after {
+            top: 25px; /* Position for the second line */
+        }
+
+
+        .circle9, .circle10, .circle11, .circle12, .circle13, .circle14, .circle15, .circle16, .circle17, .circle18, .circle19, .circle20, .circle21, .circle22, .circle23, .circle24 {
+            width: 100px;
+            height: 200px;
+            border-radius: 90% / 50%;
+            background-color: rgba(255, 49, 3, 0.85);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: absolute;
+            z-index: 2;
+            top: -90px;
+        }
+
+        /* Style for the inner ellipses */
+        .inner-ellipse {
+            width: 75px; /* Width of the ellipse */
+            height: 170px; /* Height of the ellipse */
+            border-radius: 100% / 50%; /* Ellipse shape */
+            background-color: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+
+         /* Adjusted positions and widths for lines and circles */
+        .line1 { left: 90px; width: 150px; } /* Left position and width extended by 150% */
+        .line2 { left: 270px; width: 150px; }
+        .line3 { left: 450px; width: 150px; }
+        .line4 { left: 630px; width: 150px; }
+        .line5 { left: 810px; width: 150px; }
+        .line6 { left: 990px; width: 150px; }
+        .line7 { left: 1170px; width: 150px; }
+        .line8 { left: 1350px; width: 150px; }
+        .double-line { left: 1530px; width: 150px; }
+        .double-line { left: 1710px; width: 150px; }
+        .double-line { left: 1890px; width: 150px; }
+        .double-line { left: 2070px; width: 150px; }
+        .double-line { left: 2250px; width: 150px; }
+        .double-line { left: 2430px; width: 150px; }
+        .double-line { left: 2610px; width: 150px; }
+        .double-line { left: 2790px; width: 150px; }
+        .double-line { left: 2970px; width: 150px; }
+        .double-line { left: 3150px; width: 150px; }
+        .double-line { left: 3330px; width: 150px; }
+        .double-line { left: 3510px; width: 150px; }
+        .double-line { left: 3690px; width: 150px; }
+        .double-line { left: 3870px; width: 150px; }
+        .double-line { left: 4050px; width: 150px; }
+
+
+        /* Adjusted positions for circles */
+        .circle1 { left: 0; }
+        .circle2 { left: 180px; } /* Position extended by 150% */
+        .circle3 { left: 360px; }
+        .circle4 { left: 540px; }
+        .circle5 { left: 720px; }
+        .circle6 { left: 900px; }
+        .circle7 { left: 1080px; }
+        .circle8 { left: 1260px; }
+        .circle9 { left: 1440px; }
+        .circle10 { left: 1620px; }
+        .circle11 { left: 1800px; }
+        .circle12 { left: 1980px; }
+        .circle13 { left: 2160px; }
+        .circle14 { left: 2340px; }
+        .circle15 { left: 2520px; }
+        .circle16 { left: 2700px; }
+        .circle17 { left: 2880px; }
+        .circle18 { left: 3060px; }
+        .circle19 { left: 3240px; }
+        .circle20 { left: 3420px; }
+        .circle21 { left: 3600px; }
+        .circle22 { left: 3780px; }
+        .circle23 { left: 3960px; }
+        .circle24 { left: 4140px; }
+        .circle25 { left: 4320px; top: -100px; }
+        .circle26 { left: 4500px; top: -100px; } /* Adjust vertical spacing as needed */
+        .circle27 { left: 4680px; top: -100px; } /* Adjust vertical spacing as needed */
+        .circle28 { left: 4320px; top: 10px; }
+        .circle29 { left: 4500px; top: 10px; }
+        .circle30 { left: 4680px; top: 10px; }
+
+       .station-label,
+.station-labeltop {
+    position: absolute;
+    font-size: 3em; /* Adjust this value to increase the font size */
+    font-family: 'Raleway', sans-serif;
+    text-align: center;
+    white-space: nowrap; /* Prevent text wrapping */
+    letter-spacing: 8px; /* Adjust as needed */
+    line-height: 1; /* Adjust as needed */
+}
+
+/* Adjust positioning if necessary */
+.station-label {
+    bottom: -260px; /* Position label below the circle */
+    left: 50%;
+    transform: translateX(-50%) rotate(-60deg); /* Center horizontally and rotate */
+    transform-origin: top center; /* Adjust rotation origin for alignment */
+}
+
+.station-labeltop {
+    top: -190px; /* Position label below the circle */
+    left: 50%;
+    transform: translateX(-50%) rotate(-60deg); /* Center horizontally and rotate */
+    transform-origin: top center; /* Adjust rotation origin for alignment */
+}
+
+
+        @keyframes fadeInOut {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+
+        .station-label,
+        .station-labeltop {
+            opacity: 0; /* Start with all labels hidden */
+            animation: fadeInOut 5s linear infinite;
+        }
+
+        .station-label.active,
+        .station-labeltop.active {
+            animation-play-state: running; /* Start animation when class is active */
+        }
+
+        .station-label,
+        .station-labeltop {
+            animation-play-state: paused; /* Pause animation initially */
+        }
+
+        /* Time and weather display container */
+                .time-weather-container {
+            display: flex;
+            align-items: center;
+            justify-content: center; /* Center the items horizontally */
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            z-index: 10;
+            font-family: 'Arial', sans-serif;
+            padding: 10px;
+            font-size: 1.5em; /* Adjust as needed */
+        }
+
+        .weather-display {
+            font-size: 18px;
+            margin-right: 10px;
+        }
+
+        .time-display {
+            font-size: 24px;
+        }
+
+        /* Time display */
+        .time-display {
+            font-size: 24px;
+            margin-center: 10px;
+        }
+
+        /* Weather display */
+        .weather-display {
+            font-size: 18px;
+            margin-right: 10px;
+        }
+
+
+        .trip-calculation-btn {
+            position: fixed;
+            top: 4px;
+            right: 210px; /* Adjust as needed */
+            padding: 10px 20px;
+            font-size: 1em;
+            background-color: rgba(255, 255, 255, 0.33);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            z-index: 20;
+        }
+
+        .trip-calculation-btn:hover {
+            background-color: #0056b3;
+        }
+
+        .trip-bar {
+            position: fixed;
+            bottom: -500px; /* Initially hidden below the screen */
+            left: 0;
+            right: 0;
+            background-color: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 20px;
+            border-top-left-radius: 20px;
+            border-top-right-radius: 20px;
+            box-shadow: 0 -5px 15px rgba(0, 0, 0, 0.5);
+            z-index: 30;
+            transition: bottom 0.5s ease-in-out;
+        }
+
+        .trip-bar.active {
+            bottom: 0; /* Slide up into view */
+        }
+
+        .trip-bar h2 {
+            margin: 0 0 20px;
+            font-size: 1.5em;
+            text-align: center;
+            color: #e0e0e0;
+        }
+
+        .trip-bar select,
+        .trip-bar button,
+        .trip-bar input {
+            margin: 10px 0;
+            padding: 10px;
+            font-size: 1em;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        .trip-bar select {
+            width: calc(50% - 12px);
+            display: inline-block;
+        }
+
+        .trip-bar input {
+            width: calc(50% - 12px);
+            display: inline-block;
+        }
+
+        .trip-bar button {
+            background-color: rgba(255, 255, 255, 0.33);
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .trip-bar button:hover {
+            background-color: #0056b3;
+        }
+
+        .trip-bar .result {
+            margin-top: 20px;
+            font-size: 1.2em;
+            text-align: center;
+        }
+
+        /* Dropdown styling */
+        .trip-bar select {
+            background-color: rgba(255, 255, 255, 0.9);
+            border: 1px solid rgba(0, 0, 0, 0.5);
+        }
+
+        .trip-bar option {
+            background-color: rgb(17, 17, 17);
+            color: white;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="time-weather-container">
+        <div class="weather-display" id="weather-display"></div>
+        <div class="time-display" id="time-display"></div>
+    </div>
+     <button id="center-view-btn" class="center-view-btn">Restore View (2 - tap) </button>
+    <button id="trip-calculation-btn" class="trip-calculation-btn">Travel Time</button>
+    <div class="trip-bar" id="trip-bar">
+        <h2>Travel Time Measure</h2>
+        <select id="start-station" class="station-select">
+            <!-- Stations will be dynamically populated -->
+        </select>
+        <select id="end-station" class="station-select">
+            <!-- Stations will be dynamically populated -->
+        </select>
+        <button id="calculate-btn">Calculate</button>
+        <div class="result" id="trip-result"></div>
+    </div>
+    <div class="outer-container">
+        <div class="zoom-wrapper">
+    <div class="container">
+        <!-- Lines between circles -->
+        <div class="line line1"></div>
+        <div class="line line2"></div>
+        <div class="line line3"></div>
+        <div class="line line4"></div>
+        <div class="line line5"></div>
+        <div class="line line6"></div>
+        <div class="line line7"></div>
+        <div class="line line8"></div>
+        <div class="line double-line" style="left: 1530px; width: 150px;"></div>
+        <div class="line double-line" style="left: 1710px; width: 150px;"></div>
+        <div class="line double-line" style="left: 1890px; width: 150px;"></div>
+        <div class="line double-line" style="left: 2070px; width: 150px;"></div>
+        <div class="line double-line" style="left: 2250px; width: 150px;"></div>
+        <div class="line double-line" style="left: 2430px; width: 150px;"></div>
+        <div class="line double-line" style="left: 2610px; width: 150px;"></div>
+        <div class="line double-line" style="left: 2790px; width: 150px;"></div>
+        <div class="line double-line" style="left: 2970px; width: 150px;"></div>
+        <div class="line double-line" style="left: 3150px; width: 150px;"></div>
+        <div class="line double-line" style="left: 3330px; width: 150px;"></div>
+        <div class="line double-line" style="left: 3510px; width: 150px;"></div>
+        <div class="line double-line" style="left: 3690px; width: 150px;"></div>
+        <div class="line double-line" style="left: 3870px; width: 150px;"></div>
+        <div class="line double-line" style="left: 4050px; width: 150px;"></div>
+        <div class="line double-line" style="left: 4230px; width: 150px;"></div>
+        <div class="line double-line" style="left: 4400px; width: 150px;"></div>
+        <div class="line double-line" style="left: 4580px; width: 150px;"></div>
+
+
+        <!-- Circles -->
+         <div class="circle circle1">
+            <div class="inner-circle"></div>
+            <div class="station-label">Kivenlathi</div>
+        </div>
+        <div class="circle circle2">
+            <div class="inner-circle"></div>
+            <div class="station-label">Espoonlahti</div>
+        </div>
+        <div class="circle circle3">
+            <div class="inner-circle"></div>
+            <div class="station-label">Soukka</div>
+        </div>
+        <div class="circle circle4">
+            <div class="inner-circle"></div>
+            <div class="station-label">Kaitaa</div>
+        </div>
+        <div class="circle circle5">
+            <div class="inner-circle"></div>
+            <div class="station-label">Finnoo</div>
+        </div>
+        <div class="circle circle6">
+            <div class="inner-circle"></div>
+            <div class="station-label">Matinkylä</div>
+        </div>
+        <div class="circle circle7">
+            <div class="inner-circle"></div>
+            <div class="station-label">Niittykumpu</div>
+        </div>
+        <div class="circle circle8">
+            <div class="inner-circle"></div>
+            <div class="station-label">Urheilupuisto</div>
+        </div>
+        <div class="circle circle9">
+            <div class="inner-ellipse"></div>
+            <div class="station-label">Tapiola</div>
+        </div>
+        <div class="circle circle10">
+            <div class="inner-ellipse"></div>
+            <div class="station-label">Aalto-yliopisto</div>
+        </div>
+        <div class="circle circle11">
+            <div class="inner-ellipse"></div>
+            <div class="station-label">Keilanemi</div>
+        </div>
+        <div class="circle circle12">
+            <div class="inner-ellipse"></div>
+            <div class="station-label">Koivusaari</div>
+        </div>
+        <div class="circle circle13">
+            <div class="inner-ellipse"></div>
+            <div class="station-label">Lauttasaari</div>
+        </div>
+        <div class="circle circle14">
+            <div class="inner-ellipse"></div>
+            <div class="station-label">Ruoholahti</div>
+        </div>
+        <div class="circle circle15">
+            <div class="inner-ellipse"></div>
+            <div class="station-label">Kamppi</div>
+        </div>
+        <div class="circle circle16">
+            <div class="inner-ellipse"></div>
+            <div class="station-label">Rautatientori</div>
+        </div>
+        <div class="circle circle17">
+            <div class="inner-ellipse"></div>
+            <div class="station-label">Helsingin yliopisto</div>
+        </div>
+        <div class="circle circle18">
+            <div class="inner-ellipse"></div>
+            <div class="station-label">Hakaniemi</div>
+        </div>
+        <div class="circle circle19">
+            <div class="inner-ellipse"></div>
+            <div class="station-label">Sörnäinen</div>
+        </div>
+        <div class="circle circle20">
+            <div class="inner-ellipse"></div>
+            <div class="station-label">Kalasatama</div>
+        </div>
+        <div class="circle circle21">
+            <div class="inner-ellipse"></div>
+            <div class="station-label">Kulosaari</div>
+        </div>
+        <div class="circle circle22">
+            <div class="inner-ellipse"></div>
+            <div class="station-label">Herttoniemi</div>
+        </div>
+        <div class="circle circle23">
+            <div class="inner-ellipse"></div>
+            <div class="station-label">Siilite</div>
+        </div>
+        <div class="circle circle24">
+            <div class="inner-ellipse"></div>
+            <div class="station-label">Itäkeskus</div>
+        </div>
+        <div class="circle circle25">
+            <div class="inner-circle"></div>
+            <div class="station-labeltop">Myllypuro</div>
+        </div>
+        <div class="circle circle26">
+            <div class="inner-circle"></div>
+            <div class="station-labeltop">Kontula</div>
+        </div>
+        <div class="circle circle27">
+            <div class="inner-circle"></div>
+            <div class="station-labeltop">Mellunmäki</div>
+        </div>
+        <div class="circle circle28">
+            <div class="inner-circle"></div>
+            <div class="station-label">Puotila</div>
+        </div>
+        <div class="circle circle29">
+            <div class="inner-circle"></div>
+            <div class="station-label">Rastila</div>
+        </div>
+        <div class="circle circle30">
+            <div class="inner-circle"></div>
+            <div class="station-label">Vuosaari</div>
+        </div>
+
+
+    </div>
+    </div>
+        </div>
+
+
+
+    <script>
+            window.onload = function() {
+    const doubleLineElements = document.querySelectorAll('.line.double-line');
+    doubleLineElements.forEach(el => {
+        const left = el.style.left;
+        const width = el.style.width;
+
+        // Hide the corresponding single line
+        document.querySelectorAll(`.line:not(.double-line)`).forEach(line => {
+            if (line.style.left === left && line.style.width === width) {
+                line.style.display = 'none';
+            }
+        });
+    });
+
+    // Fade in and out station labels
+    const labels = document.querySelectorAll('.station-label, .station-labeltop');
+    let index = 0;
+
+    function showNextLabel() {
+        // Hide all labels
+        labels.forEach(label => label.classList.remove('active'));
+
+        // Show the current label
+        labels[index].classList.add('active');
+
+        // Increment index and reset if necessary
+        index = (index + 1) % labels.length;
+
+        // Schedule next label to be shown
+        setTimeout(showNextLabel, 5000); // 5000ms = 5 seconds
+    }
+
+    // Start the animation loop
+    showNextLabel();
+};
+
+window.onload = function() {
+    const doubleLineElements = document.querySelectorAll('.line.double-line');
+    doubleLineElements.forEach(el => {
+        const left = el.style.left;
+        const width = el.style.width;
+
+        // Hide the corresponding single line
+        document.querySelectorAll(`.line:not(.double-line)`).forEach(line => {
+            if (line.style.left === left && line.style.width === width) {
+                line.style.display = 'none';
+            }
+        });
+    });
+
+    // Fade in and out station labels
+    const labels = document.querySelectorAll('.station-label, .station-labeltop');
+    let index = 0;
+
+    function showNextLabel() {
+        // Hide all labels
+        labels.forEach(label => label.classList.remove('active'));
+
+        // Show the current label
+        labels[index].classList.add('active');
+
+        // Increment index and reset if necessary
+        index = (index + 1) % labels.length;
+
+        // Schedule next label to be shown
+        setTimeout(showNextLabel, 5000); // 5000ms = 5 seconds
+    }
+
+    // Start the animation loop
+    showNextLabel();
+
+    const container = document.querySelector('.container');
+    const zoomWrapper = document.querySelector('.zoom-wrapper');
+    let zoomLevel = 1; // Initial zoom level
+
+    // Initialize dragging variables
+    let isDragging = false;
+    let startX, startY, initialX, initialY;
+
+    // Adjust zoom based on scroll direction
+    function adjustZoom(event) {
+        if (event.deltaY > 0) {
+            zoomLevel = Math.max(0.3, zoomLevel - 0.05); // Zoom out
+        } else {
+            zoomLevel = Math.min(2, zoomLevel + 0.05); // Zoom in
+        }
+        container.style.transform = `scale(${zoomLevel})`;
+    }
+
+    // Handle mouse down event for dragging
+    function handleMouseDown(event) {
+        isDragging = true;
+        startX = event.clientX;
+        startY = event.clientY;
+        initialX = zoomWrapper.offsetLeft;
+        initialY = zoomWrapper.offsetTop;
+        zoomWrapper.classList.add('dragging');
+    }
+
+    // Handle mouse move event for dragging
+    function handleMouseMove(event) {
+        if (isDragging) {
+            const dx = event.clientX - startX;
+            const dy = event.clientY - startY;
+            zoomWrapper.style.left = `${initialX + dx}px`;
+            zoomWrapper.style.top = `${initialY + dy}px`;
+        }
+    }
+
+    // Handle mouse up event to stop dragging
+    function handleMouseUp() {
+        isDragging = false;
+        zoomWrapper.classList.remove('dragging');
+    }
+
+    // Center the view on the 15th station
+    function centerView() {
+        const station = document.querySelector('.circle.circle15');
+        if (station) {
+            const stationRect = station.getBoundingClientRect();
+            const wrapperRect = zoomWrapper.getBoundingClientRect();
+            const containerRect = container.getBoundingClientRect();
+
+            // Calculate the center position of the zoomWrapper to center on the 15th station
+            const centerX = (containerRect.width - wrapperRect.width * zoomLevel) / 2 + (containerRect.left - stationRect.left) - 500;
+            const centerY = (containerRect.height - wrapperRect.height * zoomLevel) / 2 + (containerRect.top - stationRect.top) + 400;
+
+            // Apply the calculated position
+            zoomWrapper.style.left = `${centerX}px`;
+            zoomWrapper.style.top = `${centerY}px`;
+
+            // Reset zoom level
+            zoomLevel = 0.3;
+            container.style.transform = `scale(${zoomLevel})`;
+        }
+    }
+
+    window.addEventListener('wheel', adjustZoom);
+    window.addEventListener('mousedown', handleMouseDown);
+    window.addEventListener('mousemove', handleMouseMove);
+    window.addEventListener('mouseup', handleMouseUp);
+
+    // Add event listener for center view button
+    document.getElementById('center-view-btn').addEventListener('click', centerView);
+
+    // Time and weather display functions
+    function updateTime() {
+        const options = { timeZone: 'Europe/Helsinki', hour: '2-digit', minute: '2-digit', second: '2-digit' };
+        const timeString = new Intl.DateTimeFormat('en-GB', options).format(new Date());
+        document.getElementById('time-display').textContent = `Helsinki  ${timeString}`;
+    }
+
+    async function updateWeather() {
+        try {
+            const response = await fetch('https://wttr.in/Helsinki?format=%t,%c');
+            const weatherText = await response.text();
+            const weatherTexty = weatherText.replace(/,/g, ' ');
+            document.getElementById('weather-display').textContent = `${weatherTexty}`;
+        } catch (error) {
+            console.error('Error fetching weather data:', error);
+            document.getElementById('weather-display').textContent = 'Error fetching weather data';
+        }
+    }
+
+    updateTime();
+    updateWeather();
+    setInterval(updateTime, 100);
+};
+
+
+
+window.onload = function() {
+            // Existing JavaScript code
+
+            const doubleLineElements = document.querySelectorAll('.line.double-line');
+            doubleLineElements.forEach(el => {
+                const left = el.style.left;
+                const width = el.style.width;
+
+                document.querySelectorAll(`.line:not(.double-line)`).forEach(line => {
+                    if (line.style.left === left && line.style.width === width) {
+                        line.style.display = 'none';
+                    }
+                });
+            });
+
+            const labels = document.querySelectorAll('.station-label, .station-labeltop');
+            let index = 0;
+
+            function showNextLabel() {
+                labels.forEach(label => label.classList.remove('active'));
+                labels[index].classList.add('active');
+                index = (index + 1) % labels.length;
+                setTimeout(showNextLabel, 5000);
+            }
+
+            showNextLabel();
+
+            const container = document.querySelector('.container');
+            const zoomWrapper = document.querySelector('.zoom-wrapper');
+            let zoomLevel = 1;
+
+            let isDragging = false;
+            let startX, startY, initialX, initialY;
+
+            function adjustZoom(event) {
+                if (event.deltaY > 0) {
+                    zoomLevel = Math.max(0.3, zoomLevel - 0.05);
+                } else {
+                    zoomLevel = Math.min(2, zoomLevel + 0.05);
+                }
+                container.style.transform = `scale(${zoomLevel})`;
+            }
+
+            function handleMouseDown(event) {
+                isDragging = true;
+                startX = event.clientX;
+                startY = event.clientY;
+                initialX = zoomWrapper.offsetLeft;
+                initialY = zoomWrapper.offsetTop;
+                zoomWrapper.classList.add('dragging');
+            }
+
+            function handleMouseMove(event) {
+                if (isDragging) {
+                    const dx = event.clientX - startX;
+                    const dy = event.clientY - startY;
+                    zoomWrapper.style.left = `${initialX + dx}px`;
+                    zoomWrapper.style.top = `${initialY + dy}px`;
+                }
+            }
+
+            function handleMouseUp() {
+                isDragging = false;
+                zoomWrapper.classList.remove('dragging');
+            }
+
+            function centerView() {
+                const station = document.querySelector('.circle.circle15');
+                if (station) {
+                    const stationRect = station.getBoundingClientRect();
+                    const wrapperRect = zoomWrapper.getBoundingClientRect();
+                    const containerRect = container.getBoundingClientRect();
+
+                    const centerX = (containerRect.width - wrapperRect.width * zoomLevel) / 2 + (containerRect.left - stationRect.left) - 500;
+                    const centerY = (containerRect.height - wrapperRect.height * zoomLevel) / 2 + (containerRect.top - stationRect.top) + 400;
+
+                    zoomWrapper.style.left = `${centerX}px`;
+                    zoomWrapper.style.top = `${centerY}px`;
+
+                    zoomLevel = 0.3;
+                    container.style.transform = `scale(${zoomLevel})`;
+                }
+            }
+
+            window.addEventListener('wheel', adjustZoom);
+            window.addEventListener('mousedown', handleMouseDown);
+            window.addEventListener('mousemove', handleMouseMove);
+            window.addEventListener('mouseup', handleMouseUp);
+
+            document.getElementById('center-view-btn').addEventListener('click', centerView);
+
+            function updateTime() {
+                const options = { timeZone: 'Europe/Helsinki', hour: '2-digit', minute: '2-digit', second: '2-digit' };
+                const timeString = new Intl.DateTimeFormat('en-GB', options).format(new Date());
+                document.getElementById('time-display').textContent = `Helsinki  ${timeString}`;
+            }
+
+            async function updateWeather() {
+                try {
+                    const response = await fetch('https://wttr.in/Helsinki?format=%t,%c');
+                    const weatherText = await response.text();
+                    const weatherTexty = weatherText.replace(/,/g, ' ');
+                    document.getElementById('weather-display').textContent = `${weatherTexty}`;
+                } catch (error) {
+                    console.error('Error fetching weather data:', error);
+                    document.getElementById('weather-display').textContent = 'Error fetching weather data';
+                }
+            }
+
+            updateTime();
+            updateWeather();
+            setInterval(updateTime, 100);
+
+            // New button and trip calculation functionality
+             const stations = [
+    {
+      "name": "Kivenlathi",
+      "connections": {
+        "Kivenlathi": 0,
+        "Espoonlahti": 8,
+        "Soukka": 10,
+        "Kaitaa": 17,
+        "Finnoo": 23,
+        "Matinkylä": 35,
+        "Niittykumpu": 43,
+        "Urheilupuisto": 49,
+        "Tapiola": 59,
+        "Aalto-yliopisto": 64,
+        "Keilanemi": 70,
+        "Koivusaari": 77,
+        "Lauttasaari": 85,
+        "Ruoholahti": 91,
+        "Kamppi": 96,
+        "Rautatientori": 98,
+        "Helsingin yliopisto": 101,
+        "Hakaniemi": 105,
+        "Sörnäinen": 107,
+        "Kalasatama": 112,
+        "Kulosaari": 122,
+        "Herttoniemi": 130,
+        "Siilitie": 136,
+        "Itäkeskus": 143,
+        "Myllypuro": 153,
+        "Kontula": 159,
+        "Mellunmäki": 167,
+        "Puotila": 179,
+        "Rastila": 186,
+        "Vuosaari": 196
+      }
+    },
+    {
+      "name": "Espoonlahti",
+      "connections": {
+        "Kivenlathi": 8,
+        "Espoonlahti": 0,
+        "Soukka": 10,
+        "Kaitaa": 17,
+        "Finnoo": 15,
+        "Matinkylä": 27,
+        "Niittykumpu": 35,
+        "Urheilupuisto": 41,
+        "Tapiola": 51,
+        "Aalto-yliopisto": 56,
+        "Keilanemi": 62,
+        "Koivusaari": 69,
+        "Lauttasaari": 77,
+        "Ruoholahti": 83,
+        "Kamppi": 88,
+        "Rautatientori": 90,
+        "Helsingin yliopisto": 93,
+        "Hakaniemi": 97,
+        "Sörnäinen": 99,
+        "Kalasatama": 104,
+        "Kulosaari": 114,
+        "Herttoniemi": 122,
+        "Siilitie": 128,
+        "Itäkeskus": 135,
+        "Myllypuro": 145,
+        "Kontula": 151,
+        "Mellunmäki": 159,
+        "Puotila": 171,
+        "Rastila": 178,
+        "Vuosaari": 188
+      }
+    },
+    {
+      "name": "Soukka",
+      "connections": {
+        "Kivenlathi": 10,
+        "Espoonlahti": 10,
+        "Soukka": 0,
+        "Kaitaa": 7,
+        "Finnoo": 17,
+        "Matinkylä": 29,
+        "Niittykumpu": 37,
+        "Urheilupuisto": 43,
+        "Tapiola": 53,
+        "Aalto-yliopisto": 58,
+        "Keilanemi": 64,
+        "Koivusaari": 71,
+        "Lauttasaari": 79,
+        "Ruoholahti": 85,
+        "Kamppi": 90,
+        "Rautatientori": 92,
+        "Helsingin yliopisto": 95,
+        "Hakaniemi": 99,
+        "Sörnäinen": 101,
+        "Kalasatama": 106,
+        "Kulosaari": 116,
+        "Herttoniemi": 124,
+        "Siilitie": 130,
+        "Itäkeskus": 137,
+        "Myllypuro": 147,
+        "Kontula": 153,
+        "Mellunmäki": 161,
+        "Puotila": 173,
+        "Rastila": 180,
+        "Vuosaari": 190
+      }
+    },
+    {
+      "name": "Kaitaa",
+      "connections": {
+        "Kivenlathi": 17,
+        "Espoonlahti": 17,
+        "Soukka": 7,
+        "Kaitaa": 0,
+        "Finnoo": 10,
+        "Matinkylä": 22,
+        "Niittykumpu": 30,
+        "Urheilupuisto": 36,
+        "Tapiola": 46,
+        "Aalto-yliopisto": 51,
+        "Keilanemi": 57,
+        "Koivusaari": 64,
+        "Lauttasaari": 72,
+        "Ruoholahti": 78,
+        "Kamppi": 83,
+        "Rautatientori": 85,
+        "Helsingin yliopisto": 88,
+        "Hakaniemi": 92,
+        "Sörnäinen": 94,
+        "Kalasatama": 99,
+        "Kulosaari": 109,
+        "Herttoniemi": 117,
+        "Siilitie": 123,
+        "Itäkeskus": 130,
+        "Myllypuro": 140,
+        "Kontula": 146,
+        "Mellunmäki": 154,
+        "Puotila": 166,
+        "Rastila": 173,
+        "Vuosaari": 183
+      }
+    },
+    {
+      "name": "Finnoo",
+      "connections": {
+        "Kivenlathi": 23,
+        "Espoonlahti": 15,
+        "Soukka": 17,
+        "Kaitaa": 10,
+        "Finnoo": 0,
+        "Matinkylä": 12,
+        "Niittykumpu": 20,
+        "Urheilupuisto": 26,
+        "Tapiola": 36,
+        "Aalto-yliopisto": 41,
+        "Keilanemi": 47,
+        "Koivusaari": 54,
+        "Lauttasaari": 62,
+        "Ruoholahti": 68,
+        "Kamppi": 73,
+        "Rautatientori": 75,
+        "Helsingin yliopisto": 78,
+        "Hakaniemi": 82,
+        "Sörnäinen": 84,
+        "Kalasatama": 89,
+        "Kulosaari": 99,
+        "Herttoniemi": 107,
+        "Siilitie": 113,
+        "Itäkeskus": 120,
+        "Myllypuro": 130,
+        "Kontula": 136,
+        "Mellunmäki": 144,
+        "Puotila": 156,
+        "Rastila": 163,
+        "Vuosaari": 173
+      }
+    },
+    {
+      "name": "Matinkylä",
+      "connections": {
+        "Kivenlathi": 35,
+        "Espoonlahti": 27,
+        "Soukka": 29,
+        "Kaitaa": 22,
+        "Finnoo": 12,
+        "Matinkylä": 0,
+        "Niittykumpu": 8,
+        "Urheilupuisto": 14,
+        "Tapiola": 24,
+        "Aalto-yliopisto": 29,
+        "Keilanemi": 35,
+        "Koivusaari": 42,
+        "Lauttasaari": 50,
+        "Ruoholahti": 56,
+        "Kamppi": 61,
+        "Rautatientori": 63,
+        "Helsingin yliopisto": 66,
+        "Hakaniemi": 70,
+        "Sörnäinen": 72,
+        "Kalasatama": 77,
+        "Kulosaari": 87,
+        "Herttoniemi": 95,
+        "Siilitie": 101,
+        "Itäkeskus": 108,
+        "Myllypuro": 118,
+        "Kontula": 124,
+        "Mellunmäki": 132,
+        "Puotila": 144,
+        "Rastila": 151,
+        "Vuosaari": 161
+      }
+    },
+    {
+      "name": "Niittykumpu",
+      "connections": {
+        "Kivenlathi": 43,
+        "Espoonlahti": 35,
+        "Soukka": 37,
+        "Kaitaa": 30,
+        "Finnoo": 20,
+        "Matinkylä": 8,
+        "Niittykumpu": 0,
+        "Urheilupuisto": 6,
+        "Tapiola": 16,
+        "Aalto-yliopisto": 21,
+        "Keilanemi": 27,
+        "Koivusaari": 34,
+        "Lauttasaari": 42,
+        "Ruoholahti": 48,
+        "Kamppi": 53,
+        "Rautatientori": 55,
+        "Helsingin yliopisto": 58,
+        "Hakaniemi": 62,
+        "Sörnäinen": 64,
+        "Kalasatama": 69,
+        "Kulosaari": 79,
+        "Herttoniemi": 87,
+        "Siilitie": 93,
+        "Itäkeskus": 100,
+        "Myllypuro": 110,
+        "Kontula": 116,
+        "Mellunmäki": 124,
+        "Puotila": 136,
+        "Rastila": 143,
+        "Vuosaari": 153
+      }
+    },
+    {
+      "name": "Urheilupuisto",
+      "connections": {
+        "Kivenlathi": 49,
+        "Espoonlahti": 41,
+        "Soukka": 43,
+        "Kaitaa": 36,
+        "Finnoo": 26,
+        "Matinkylä": 14,
+        "Niittykumpu": 6,
+        "Urheilupuisto": 0,
+        "Tapiola": 10,
+        "Aalto-yliopisto": 15,
+        "Keilanemi": 21,
+        "Koivusaari": 28,
+        "Lauttasaari": 36,
+        "Ruoholahti": 42,
+        "Kamppi": 47,
+        "Rautatientori": 49,
+        "Helsingin yliopisto": 52,
+        "Hakaniemi": 56,
+        "Sörnäinen": 58,
+        "Kalasatama": 63,
+        "Kulosaari": 73,
+        "Herttoniemi": 81,
+        "Siilitie": 87,
+        "Itäkeskus": 94,
+        "Myllypuro": 104,
+        "Kontula": 110,
+        "Mellunmäki": 118,
+        "Puotila": 130,
+        "Rastila": 137,
+        "Vuosaari": 147
+      }
+    },
+    {
+      "name": "Tapiola",
+      "connections": {
+        "Kivenlathi": 59,
+        "Espoonlahti": 51,
+        "Soukka": 53,
+        "Kaitaa": 46,
+        "Finnoo": 36,
+        "Matinkylä": 24,
+        "Niittykumpu": 16,
+        "Urheilupuisto": 10,
+        "Tapiola": 0,
+        "Aalto-yliopisto": 5,
+        "Keilanemi": 11,
+        "Koivusaari": 18,
+        "Lauttasaari": 26,
+        "Ruoholahti": 32,
+        "Kamppi": 37,
+        "Rautatientori": 39,
+        "Helsingin yliopisto": 42,
+        "Hakaniemi": 46,
+        "Sörnäinen": 48,
+        "Kalasatama": 53,
+        "Kulosaari": 63,
+        "Herttoniemi": 71,
+        "Siilitie": 77,
+        "Itäkeskus": 84,
+        "Myllypuro": 94,
+        "Kontula": 100,
+        "Mellunmäki": 108,
+        "Puotila": 120,
+        "Rastila": 127,
+        "Vuosaari": 137
+      }
+    },
+    {
+      "name": "Aalto-yliopisto",
+      "connections": {
+        "Kivenlathi": 64,
+        "Espoonlahti": 56,
+        "Soukka": 58,
+        "Kaitaa": 51,
+        "Finnoo": 41,
+        "Matinkylä": 29,
+        "Niittykumpu": 21,
+        "Urheilupuisto": 15,
+        "Tapiola": 5,
+        "Aalto-yliopisto": 0,
+        "Keilanemi": 6,
+        "Koivusaari": 13,
+        "Lauttasaari": 21,
+        "Ruoholahti": 27,
+        "Kamppi": 32,
+        "Rautatientori": 34,
+        "Helsingin yliopisto": 37,
+        "Hakaniemi": 41,
+        "Sörnäinen": 43,
+        "Kalasatama": 48,
+        "Kulosaari": 58,
+        "Herttoniemi": 66,
+        "Siilitie": 72,
+        "Itäkeskus": 79,
+        "Myllypuro": 89,
+        "Kontula": 95,
+        "Mellunmäki": 103,
+        "Puotila": 115,
+        "Rastila": 122,
+        "Vuosaari": 132
+      }
+    },
+    {
+      "name": "Keilanemi",
+      "connections": {
+        "Kivenlathi": 70,
+        "Espoonlahti": 62,
+        "Soukka": 64,
+        "Kaitaa": 57,
+        "Finnoo": 47,
+        "Matinkylä": 35,
+        "Niittykumpu": 27,
+        "Urheilupuisto": 21,
+        "Tapiola": 11,
+        "Aalto-yliopisto": 6,
+        "Keilanemi": 0,
+        "Koivusaari": 7,
+        "Lauttasaari": 15,
+        "Ruoholahti": 21,
+        "Kamppi": 26,
+        "Rautatientori": 28,
+        "Helsingin yliopisto": 31,
+        "Hakaniemi": 35,
+        "Sörnäinen": 37,
+        "Kalasatama": 42,
+        "Kulosaari": 52,
+        "Herttoniemi": 60,
+        "Siilitie": 66,
+        "Itäkeskus": 73,
+        "Myllypuro": 83,
+        "Kontula": 89,
+        "Mellunmäki": 97,
+        "Puotila": 109,
+        "Rastila": 116,
+        "Vuosaari": 126
+      }
+    },
+    {
+      "name": "Koivusaari",
+      "connections": {
+        "Kivenlathi": 77,
+        "Espoonlahti": 69,
+        "Soukka": 71,
+        "Kaitaa": 64,
+        "Finnoo": 54,
+        "Matinkylä": 42,
+        "Niittykumpu": 34,
+        "Urheilupuisto": 28,
+        "Tapiola": 18,
+        "Aalto-yliopisto": 13,
+        "Keilanemi": 7,
+        "Koivusaari": 0,
+        "Lauttasaari": 8,
+        "Ruoholahti": 14,
+        "Kamppi": 19,
+        "Rautatientori": 21,
+        "Helsingin yliopisto": 24,
+        "Hakaniemi": 28,
+        "Sörnäinen": 30,
+        "Kalasatama": 35,
+        "Kulosaari": 45,
+        "Herttoniemi": 53,
+        "Siilitie": 59,
+        "Itäkeskus": 66,
+        "Myllypuro": 76,
+        "Kontula": 82,
+        "Mellunmäki": 90,
+        "Puotila": 102,
+        "Rastila": 109,
+        "Vuosaari": 119
+      }
+    },
+    {
+      "name": "Lauttasaari",
+      "connections": {
+        "Kivenlathi": 85,
+        "Espoonlahti": 77,
+        "Soukka": 79,
+        "Kaitaa": 72,
+        "Finnoo": 62,
+        "Matinkylä": 50,
+        "Niittykumpu": 42,
+        "Urheilupuisto": 36,
+        "Tapiola": 26,
+        "Aalto-yliopisto": 21,
+        "Keilanemi": 15,
+        "Koivusaari": 8,
+        "Lauttasaari": 0,
+        "Ruoholahti": 6,
+        "Kamppi": 11,
+        "Rautatientori": 13,
+        "Helsingin yliopisto": 16,
+        "Hakaniemi": 20,
+        "Sörnäinen": 22,
+        "Kalasatama": 27,
+        "Kulosaari": 37,
+        "Herttoniemi": 45,
+        "Siilitie": 51,
+        "Itäkeskus": 58,
+        "Myllypuro": 68,
+        "Kontula": 74,
+        "Mellunmäki": 82,
+        "Puotila": 94,
+        "Rastila": 101,
+        "Vuosaari": 111
+      }
+    },
+    {
+      "name": "Ruoholahti",
+      "connections": {
+        "Kivenlathi": 91,
+        "Espoonlahti": 83,
+        "Soukka": 85,
+        "Kaitaa": 78,
+        "Finnoo": 68,
+        "Matinkylä": 56,
+        "Niittykumpu": 48,
+        "Urheilupuisto": 42,
+        "Tapiola": 32,
+        "Aalto-yliopisto": 27,
+        "Keilanemi": 21,
+        "Koivusaari": 14,
+        "Lauttasaari": 6,
+        "Ruoholahti": 0,
+        "Kamppi": 5,
+        "Rautatientori": 7,
+        "Helsingin yliopisto": 10,
+        "Hakaniemi": 14,
+        "Sörnäinen": 16,
+        "Kalasatama": 21,
+        "Kulosaari": 31,
+        "Herttoniemi": 39,
+        "Siilitie": 45,
+        "Itäkeskus": 52,
+        "Myllypuro": 62,
+        "Kontula": 68,
+        "Mellunmäki": 76,
+        "Puotila": 88,
+        "Rastila": 95,
+        "Vuosaari": 105
+      }
+    },
+    {
+      "name": "Kamppi",
+      "connections": {
+        "Kivenlathi": 96,
+        "Espoonlahti": 88,
+        "Soukka": 90,
+        "Kaitaa": 83,
+        "Finnoo": 73,
+        "Matinkylä": 61,
+        "Niittykumpu": 53,
+        "Urheilupuisto": 47,
+        "Tapiola": 37,
+        "Aalto-yliopisto": 32,
+        "Keilanemi": 26,
+        "Koivusaari": 19,
+        "Lauttasaari": 11,
+        "Ruoholahti": 5,
+        "Kamppi": 0,
+        "Rautatientori": 2,
+        "Helsingin yliopisto": 5,
+        "Hakaniemi": 9,
+        "Sörnäinen": 11,
+        "Kalasatama": 16,
+        "Kulosaari": 26,
+        "Herttoniemi": 34,
+        "Siilitie": 40,
+        "Itäkeskus": 47,
+        "Myllypuro": 57,
+        "Kontula": 63,
+        "Mellunmäki": 71,
+        "Puotila": 83,
+        "Rastila": 90,
+        "Vuosaari": 100
+      }
+    },
+    {
+      "name": "Rautatientori",
+      "connections": {
+        "Kivenlathi": 98,
+        "Espoonlahti": 90,
+        "Soukka": 92,
+        "Kaitaa": 85,
+        "Finnoo": 75,
+        "Matinkylä": 63,
+        "Niittykumpu": 55,
+        "Urheilupuisto": 49,
+        "Tapiola": 39,
+        "Aalto-yliopisto": 34,
+        "Keilanemi": 28,
+        "Koivusaari": 21,
+        "Lauttasaari": 13,
+        "Ruoholahti": 7,
+        "Kamppi": 2,
+        "Rautatientori": 0,
+        "Helsingin yliopisto": 3,
+        "Hakaniemi": 7,
+        "Sörnäinen": 9,
+        "Kalasatama": 14,
+        "Kulosaari": 24,
+        "Herttoniemi": 32,
+        "Siilitie": 38,
+        "Itäkeskus": 45,
+        "Myllypuro": 55,
+        "Kontula": 61,
+        "Mellunmäki": 69,
+        "Puotila": 81,
+        "Rastila": 88,
+        "Vuosaari": 98
+      }
+    },
+    {
+      "name": "Helsingin yliopisto",
+      "connections": {
+        "Kivenlathi": 101,
+        "Espoonlahti": 93,
+        "Soukka": 95,
+        "Kaitaa": 88,
+        "Finnoo": 78,
+        "Matinkylä": 66,
+        "Niittykumpu": 58,
+        "Urheilupuisto": 52,
+        "Tapiola": 42,
+        "Aalto-yliopisto": 37,
+        "Keilanemi": 31,
+        "Koivusaari": 24,
+        "Lauttasaari": 16,
+        "Ruoholahti": 10,
+        "Kamppi": 5,
+        "Rautatientori": 3,
+        "Helsingin yliopisto": 0,
+        "Hakaniemi": 4,
+        "Sörnäinen": 6,
+        "Kalasatama": 11,
+        "Kulosaari": 21,
+        "Herttoniemi": 29,
+        "Siilitie": 35,
+        "Itäkeskus": 42,
+        "Myllypuro": 52,
+        "Kontula": 58,
+        "Mellunmäki": 66,
+        "Puotila": 78,
+        "Rastila": 85,
+        "Vuosaari": 95
+      }
+    },
+    {
+      "name": "Hakaniemi",
+      "connections": {
+        "Kivenlathi": 105,
+        "Espoonlahti": 97,
+        "Soukka": 99,
+        "Kaitaa": 92,
+        "Finnoo": 82,
+        "Matinkylä": 70,
+        "Niittykumpu": 62,
+        "Urheilupuisto": 56,
+        "Tapiola": 46,
+        "Aalto-yliopisto": 41,
+        "Keilanemi": 35,
+        "Koivusaari": 28,
+        "Lauttasaari": 20,
+        "Ruoholahti": 14,
+        "Kamppi": 9,
+        "Rautatientori": 7,
+        "Helsingin yliopisto": 4,
+        "Hakaniemi": 0,
+        "Sörnäinen": 2,
+        "Kalasatama": 7,
+        "Kulosaari": 17,
+        "Herttoniemi": 25,
+        "Siilitie": 31,
+        "Itäkeskus": 38,
+        "Myllypuro": 48,
+        "Kontula": 54,
+        "Mellunmäki": 62,
+        "Puotila": 74,
+        "Rastila": 81,
+        "Vuosaari": 91
+      }
+    },
+    {
+      "name": "Sörnäinen",
+      "connections": {
+        "Kivenlathi": 107,
+        "Espoonlahti": 99,
+        "Soukka": 101,
+        "Kaitaa": 94,
+        "Finnoo": 84,
+        "Matinkylä": 72,
+        "Niittykumpu": 64,
+        "Urheilupuisto": 58,
+        "Tapiola": 48,
+        "Aalto-yliopisto": 43,
+        "Keilanemi": 37,
+        "Koivusaari": 30,
+        "Lauttasaari": 22,
+        "Ruoholahti": 16,
+        "Kamppi": 11,
+        "Rautatientori": 9,
+        "Helsingin yliopisto": 6,
+        "Hakaniemi": 2,
+        "Sörnäinen": 0,
+        "Kalasatama": 5,
+        "Kulosaari": 15,
+        "Herttoniemi": 23,
+        "Siilitie": 29,
+        "Itäkeskus": 36,
+        "Myllypuro": 46,
+        "Kontula": 52,
+        "Mellunmäki": 60,
+        "Puotila": 72,
+        "Rastila": 79,
+        "Vuosaari": 89
+      }
+    },
+    {
+      "name": "Kalasatama",
+      "connections": {
+        "Kivenlathi": 112,
+        "Espoonlahti": 104,
+        "Soukka": 106,
+        "Kaitaa": 99,
+        "Finnoo": 89,
+        "Matinkylä": 77,
+        "Niittykumpu": 69,
+        "Urheilupuisto": 63,
+        "Tapiola": 53,
+        "Aalto-yliopisto": 48,
+        "Keilanemi": 42,
+        "Koivusaari": 35,
+        "Lauttasaari": 27,
+        "Ruoholahti": 21,
+        "Kamppi": 16,
+        "Rautatientori": 14,
+        "Helsingin yliopisto": 11,
+        "Hakaniemi": 7,
+        "Sörnäinen": 5,
+        "Kalasatama": 0,
+        "Kulosaari": 10,
+        "Herttoniemi": 18,
+        "Siilitie": 24,
+        "Itäkeskus": 31,
+        "Myllypuro": 41,
+        "Kontula": 47,
+        "Mellunmäki": 55,
+        "Puotila": 67,
+        "Rastila": 74,
+        "Vuosaari": 84
+      }
+    },
+    {
+      "name": "Kulosaari",
+      "connections": {
+        "Kivenlathi": 121,
+        "Espoonlahti": 113,
+        "Soukka": 115,
+        "Kaitaa": 108,
+        "Finnoo": 98,
+        "Matinkylä": 86,
+        "Niittykumpu": 79,
+        "Urheilupuisto": 73,
+        "Tapiola": 63,
+        "Aalto-yliopisto": 58,
+        "Keilanemi": 52,
+        "Koivusaari": 45,
+        "Lauttasaari": 37,
+        "Ruoholahti": 31,
+        "Kamppi": 26,
+        "Rautatientori": 24,
+        "Helsingin yliopisto": 21,
+        "Hakaniemi": 17,
+        "Sörnäinen": 15,
+        "Kalasatama": 10,
+        "Kulosaari": 0,
+        "Herttoniemi": 8,
+        "Siilitie": 14,
+        "Itäkeskus": 21,
+        "Myllypuro": 31,
+        "Kontula": 37,
+        "Mellunmäki": 45,
+        "Puotila": 57,
+        "Rastila": 64,
+        "Vuosaari": 74
+      }
+    },
+    {
+      "name": "Herttoniemi",
+      "connections": {
+        "Kivenlathi": 130,
+        "Espoonlahti": 122,
+        "Soukka": 124,
+        "Kaitaa": 117,
+        "Finnoo": 107,
+        "Matinkylä": 95,
+        "Niittykumpu": 87,
+        "Urheilupuisto": 81,
+        "Tapiola": 71,
+        "Aalto-yliopisto": 66,
+        "Keilanemi": 60,
+        "Koivusaari": 53,
+        "Lauttasaari": 45,
+        "Ruoholahti": 39,
+        "Kamppi": 34,
+        "Rautatientori": 32,
+        "Helsingin yliopisto": 29,
+        "Hakaniemi": 25,
+        "Sörnäinen": 23,
+        "Kalasatama": 18,
+        "Kulosaari": 8,
+        "Herttoniemi": 0,
+        "Siilitie": 6,
+        "Itäkeskus": 13,
+        "Myllypuro": 23,
+        "Kontula": 29,
+        "Mellunmäki": 37,
+        "Puotila": 49,
+        "Rastila": 56,
+        "Vuosaari": 66
+      }
+    },
+    {
+      "name": "Siilitie",
+      "connections": {
+        "Kivenlathi": 136,
+        "Espoonlahti": 128,
+        "Soukka": 130,
+        "Kaitaa": 123,
+        "Finnoo": 113,
+        "Matinkylä": 101,
+        "Niittykumpu": 93,
+        "Urheilupuisto": 87,
+        "Tapiola": 77,
+        "Aalto-yliopisto": 72,
+        "Keilanemi": 66,
+        "Koivusaari": 59,
+        "Lauttasaari": 51,
+        "Ruoholahti": 45,
+        "Kamppi": 40,
+        "Rautatientori": 38,
+        "Helsingin yliopisto": 35,
+        "Hakaniemi": 31,
+        "Sörnäinen": 29,
+        "Kalasatama": 24,
+        "Kulosaari": 14,
+        "Herttoniemi": 6,
+        "Siilitie": 0,
+        "Itäkeskus": 7,
+        "Myllypuro": 17,
+        "Kontula": 23,
+        "Mellunmäki": 31,
+        "Puotila": 43,
+        "Rastila": 50,
+        "Vuosaari": 60
+      }
+    },
+    {
+      "name": "Itäkeskus",
+      "connections": {
+        "Kivenlathi": 146,
+        "Espoonlahti": 138,
+        "Soukka": 140,
+        "Kaitaa": 133,
+        "Finnoo": 123,
+        "Matinkylä": 111,
+        "Niittykumpu": 100,
+        "Urheilupuisto": 94,
+        "Tapiola": 84,
+        "Aalto-yliopisto": 79,
+        "Keilanemi": 73,
+        "Koivusaari": 66,
+        "Lauttasaari": 58,
+        "Ruoholahti": 52,
+        "Kamppi": 47,
+        "Rautatientori": 45,
+        "Helsingin yliopisto": 42,
+        "Hakaniemi": 38,
+        "Sörnäinen": 36,
+        "Kalasatama": 31,
+        "Kulosaari": 21,
+        "Herttoniemi": 13,
+        "Siilitie": 7,
+        "Itäkeskus": 0,
+        "Myllypuro": 10,
+        "Kontula": 16,
+        "Mellunmäki": 24,
+        "Puotila": 36,
+        "Rastila": 43,
+        "Vuosaari": 53
+      }
+    },
+    {
+      "name": "Myllypuro",
+      "connections": {
+        "Kivenlathi": 160,
+        "Espoonlahti": 152,
+        "Soukka": 154,
+        "Kaitaa": 147,
+        "Finnoo": 137,
+        "Matinkylä": 125,
+        "Niittykumpu": 110,
+        "Urheilupuisto": 104,
+        "Tapiola": 94,
+        "Aalto-yliopisto": 89,
+        "Keilanemi": 83,
+        "Koivusaari": 76,
+        "Lauttasaari": 68,
+        "Ruoholahti": 62,
+        "Kamppi": 57,
+        "Rautatientori": 55,
+        "Helsingin yliopisto": 52,
+        "Hakaniemi": 48,
+        "Sörnäinen": 46,
+        "Kalasatama": 41,
+        "Kulosaari": 31,
+        "Herttoniemi": 23,
+        "Siilitie": 17,
+        "Itäkeskus": 10,
+        "Myllypuro": 0,
+        "Kontula": 7,
+        "Mellunmäki": 15,
+        "Puotila": 27,
+        "Rastila": 34,
+        "Vuosaari": 44
+      }
+    },
+    {
+      "name": "Kontula",
+      "connections": {
+        "Kivenlathi": 168,
+        "Espoonlahti": 160,
+        "Soukka": 162,
+        "Kaitaa": 155,
+        "Finnoo": 145,
+        "Matinkylä": 133,
+        "Niittykumpu": 116,
+        "Urheilupuisto": 110,
+        "Tapiola": 100,
+        "Aalto-yliopisto": 95,
+        "Keilanemi": 89,
+        "Koivusaari": 82,
+        "Lauttasaari": 74,
+        "Ruoholahti": 68,
+        "Kamppi": 63,
+        "Rautatientori": 61,
+        "Helsingin yliopisto": 58,
+        "Hakaniemi": 54,
+        "Sörnäinen": 52,
+        "Kalasatama": 47,
+        "Kulosaari": 37,
+        "Herttoniemi": 29,
+        "Siilitie": 23,
+        "Itäkeskus": 16,
+        "Myllypuro": 7,
+        "Kontula": 0,
+        "Mellunmäki": 8,
+        "Puotila": 20,
+        "Rastila": 27,
+        "Vuosaari": 37
+      }
+    },
+    {
+      "name": "Mellunmäki",
+      "connections": {
+        "Kivenlathi": 178,
+        "Espoonlahti": 170,
+        "Soukka": 172,
+        "Kaitaa": 165,
+        "Finnoo": 155,
+        "Matinkylä": 143,
+        "Niittykumpu": 126,
+        "Urheilupuisto": 120,
+        "Tapiola": 110,
+        "Aalto-yliopisto": 105,
+        "Keilanemi": 99,
+        "Koivusaari": 92,
+        "Lauttasaari": 84,
+        "Ruoholahti": 76,
+        "Kamppi": 71,
+        "Rautatientori": 69,
+        "Helsingin yliopisto": 66,
+        "Hakaniemi": 62,
+        "Sörnäinen": 60,
+        "Kalasatama": 55,
+        "Kulosaari": 45,
+        "Herttoniemi": 37,
+        "Siilitie": 31,
+        "Itäkeskus": 24,
+        "Myllypuro": 15,
+        "Kontula": 8,
+        "Mellunmäki": 0,
+        "Puotila": 12,
+        "Rastila": 19,
+        "Vuosaari": 29
+      }
+    },
+    {
+      "name": "Puotila",
+      "connections": {
+        "Kivenlathi": 191,
+        "Espoonlahti": 183,
+        "Soukka": 185,
+        "Kaitaa": 178,
+        "Finnoo": 168,
+        "Matinkylä": 156,
+        "Niittykumpu": 139,
+        "Urheilupuisto": 133,
+        "Tapiola": 123,
+        "Aalto-yliopisto": 118,
+        "Keilanemi": 112,
+        "Koivusaari": 105,
+        "Lauttasaari": 97,
+        "Ruoholahti": 88,
+        "Kamppi": 83,
+        "Rautatientori": 81,
+        "Helsingin yliopisto": 78,
+        "Hakaniemi": 74,
+        "Sörnäinen": 72,
+        "Kalasatama": 67,
+        "Kulosaari": 57,
+        "Herttoniemi": 49,
+        "Siilitie": 43,
+        "Itäkeskus": 36,
+        "Myllypuro": 27,
+        "Kontula": 20,
+        "Mellunmäki": 12,
+        "Puotila": 0,
+        "Rastila": 7,
+        "Vuosaari": 17
+      }
+    },
+    {
+      "name": "Rastila",
+      "connections": {
+        "Kivenlathi": 200,
+        "Espoonlahti": 192,
+        "Soukka": 194,
+        "Kaitaa": 187,
+        "Finnoo": 177,
+        "Matinkylä": 165,
+        "Niittykumpu": 148,
+        "Urheilupuisto": 142,
+        "Tapiola": 132,
+        "Aalto-yliopisto": 127,
+        "Keilanemi": 121,
+        "Koivusaari": 114,
+        "Lauttasaari": 106,
+        "Ruoholahti": 95,
+        "Kamppi": 90,
+        "Rautatientori": 88,
+        "Helsingin yliopisto": 85,
+        "Hakaniemi": 81,
+        "Sörnäinen": 79,
+        "Kalasatama": 74,
+        "Kulosaari": 64,
+        "Herttoniemi": 56,
+        "Siilitie": 50,
+        "Itäkeskus": 43,
+        "Myllypuro": 34,
+        "Kontula": 27,
+        "Mellunmäki": 19,
+        "Puotila": 7,
+        "Rastila": 0,
+        "Vuosaari": 10
+      }
+    },
+    {
+      "name": "Vuosaari",
+      "connections": {
+        "Kivenlathi": 216,
+        "Espoonlahti": 208,
+        "Soukka": 210,
+        "Kaitaa": 203,
+        "Finnoo": 193,
+        "Matinkylä": 181,
+        "Niittykumpu": 164,
+        "Urheilupuisto": 158,
+        "Tapiola": 148,
+        "Aalto-yliopisto": 143,
+        "Keilanemi": 137,
+        "Koivusaari": 130,
+        "Lauttasaari": 122,
+        "Ruoholahti": 105,
+        "Kamppi": 100,
+        "Rautatientori": 98,
+        "Helsingin yliopisto": 95,
+        "Hakaniemi": 91,
+        "Sörnäinen": 89,
+        "Kalasatama": 84,
+        "Kulosaari": 74,
+        "Herttoniemi": 66,
+        "Siilitie": 60,
+        "Itäkeskus": 53,
+        "Myllypuro": 44,
+        "Kontula": 37,
+        "Mellunmäki": 29,
+        "Puotila": 17,
+        "Rastila": 10,
+        "Vuosaari": 0
+      }
+    }
+  ];
+
+            // Populate station dropdowns
+            const startStationSelect = document.getElementById('start-station');
+            const endStationSelect = document.getElementById('end-station');
+
+            stations.forEach(station => {
+                const option = document.createElement('option');
+                option.value = station.name;
+                option.textContent = station.name;
+                startStationSelect.appendChild(option);
+
+                const optionEnd = document.createElement('option');
+                optionEnd.value = station.name;
+                optionEnd.textContent = station.name;
+                endStationSelect.appendChild(optionEnd);
+            });
+
+            // Existing JavaScript code
+
+            // New button and trip calculation functionality
+            const tripCalculationBtn = document.getElementById('trip-calculation-btn');
+            const tripBar = document.getElementById('trip-bar');
+            const calculateBtn = document.getElementById('calculate-btn');
+            const startStationInput = document.getElementById('start-station');
+            const endStationInput = document.getElementById('end-station');
+            const tripResult = document.getElementById('trip-result');
+
+            tripCalculationBtn.addEventListener('click', () => {
+                tripBar.classList.toggle('active');
+            });
+
+            calculateBtn.addEventListener('click', () => {
+                const startStation = startStationInput.value;
+                const endStation = endStationInput.value;
+
+                if (startStation && endStation) {
+                    const start = stations.find(station => station.name === startStation);
+                    const end = stations.find(station => station.name === endStation);
+
+                    if (start && end) {
+                        const travelTime = start.connections[endStation];
+                        if (travelTime !== undefined) {
+                            tripResult.textContent = `Estimated travel time: ${travelTime} minutes`;
+                        } else {
+                            tripResult.textContent = `No direct connection between ${startStation} and ${endStation}.`;
+                        }
+                    } else {
+                        tripResult.textContent = 'Invalid station selected.';
+                    }
+                } else {
+                    tripResult.textContent = 'Please select both start and end stations.';
+                }
+            });
+        };
+
+
+
+
+    </script>
+</body>
+</html>
+<script>
+(function() {
+  var ws = new WebSocket('ws://' + window.location.host + 
+             '/jb-server-page?reloadMode=RELOAD_ON_SAVE&'+
+             'referrer=' + encodeURIComponent(window.location.pathname));
+  ws.onmessage = function (msg) {
+      if (msg.data === 'reload') {
+          window.location.reload();
+      }
+      if (msg.data.startsWith('update-css ')) {
+          var messageId = msg.data.substring(11);
+          var links = document.getElementsByTagName('link');
+          for (var i = 0; i < links.length; i++) {
+              var link = links[i];
+              if (link.rel !== 'stylesheet') continue;
+              var clonedLink = link.cloneNode(true);
+              var newHref = link.href.replace(/(&|\?)jbUpdateLinksId=\d+/, "$1jbUpdateLinksId=" + messageId);
+              if (newHref !== link.href) {
+                clonedLink.href = newHref;
+              }
+              else {
+                var indexOfQuest = newHref.indexOf('?');
+                if (indexOfQuest >= 0) {
+                  // to support ?foo#hash 
+                  clonedLink.href = newHref.substring(0, indexOfQuest + 1) + 'jbUpdateLinksId=' + messageId + '&' + 
+                                    newHref.substring(indexOfQuest + 1);
+                }
+                else {
+                  clonedLink.href += '?' + 'jbUpdateLinksId=' + messageId;
+                }
+              }
+              link.replaceWith(clonedLink);
+          }
+      }
+  };
+})();
+</script>
